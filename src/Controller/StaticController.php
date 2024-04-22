@@ -98,7 +98,13 @@ class StaticController extends AbstractController
             ['Avertuneiro Antes Lance Mao (ending theme)', 'Suikoden', 'Credits'],
             ['Moon Trilogy - Promise (Finale Version)', 'Moon', 'Outro'],
             ['Snakes in the Grass', 'Quantic', 'AI Disclosure'],
-            ['Common Knowledge', 'Quantic', 'AI Disclosure']
+            ['Common Knowledge', 'Quantic', 'AI Disclosure'],
+            ['Guess Work', 'The Ocean Party', 'Intermission'],
+            ['Otherside', 'Tom Staar and Eddie Thoneick', 'Intermission'],
+            ['Hard Up', 'The Bamboos', 'Intermission'],
+            ['Come Follow Me', 'The Shtooks', 'Intermission'],
+            ['Baby Got Back', 'Sir Mix-A-Lot ft. the Seattle Symphony', 'Intermission'],
+            ['End Theme', 'Sorya nai ze! ? Fureijā', 'Intermission'],
         ];
 
         return $this->render('soundtrack.html.twig', [
