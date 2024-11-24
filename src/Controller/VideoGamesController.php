@@ -27,7 +27,7 @@ class VideoGamesController extends AbstractController
         $games = $query->getQuery()->getResult();
 
         return $this->render('videoGames.html.twig', [
-            'title' => 'Vidya in 2023',
+            'title' => 'Vidya in 2024',
             'games' => $games
         ]);
     }
@@ -102,7 +102,7 @@ class VideoGamesController extends AbstractController
         }
 
         try {
-            $games = $wikpedia->getGames(2023);
+            $games = $wikpedia->getGames(2024);
         } catch (Exception $e) {
             return $this->json(['error' => $e->getMessage()]);
         }
@@ -113,7 +113,7 @@ class VideoGamesController extends AbstractController
         );
         $em->flush();
 
-        $session->getFlashBag()->add('success', 'The list of 2023 video game releases has been successfully imported from Wikipedia.');
+        $session->getFlashBag()->add('success', 'The list of 2024 video game releases has been successfully imported from Wikipedia.');
 
         return $this->json(['success' => true]);
     }
