@@ -64,7 +64,6 @@
 {% endblock %}
 
 {% block body %}
-  <div class="top-trim"></div>
   <div class="background-decorations">
     {% for decoration in decorations %}
       <img src="{{ decoration.decoration.image.url }}" class="decoration" style="rotate: {{ decoration.angle }}deg; {{ decoration.direction }}: {{ decoration.x }}px; top: {{ decoration.y }}px; mask-image: linear-gradient(to {{decoration.direction}}, #0000, #FFF 80%);">
@@ -88,8 +87,13 @@
       <a class="logo" href="{{ path('index') }}">
         <img src="{{ asset('2023images/logo-wide.png') }}">
       </a>
-      <div class="title-text">
-        {{ voteText }}
+      <div class="right-container">
+        <div class="inner-border">
+          <div class="title-text">
+            {{ voteText }}
+          </div>
+        </div>
+        <div class="inner-background"></div>
       </div>
     </header>
 
@@ -531,5 +535,4 @@
     <div id="react-captcha"></div>
   {% endif %}
 
-  <div class="bottom-trim"></div>
 {% endblock %}

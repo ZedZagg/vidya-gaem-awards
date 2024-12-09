@@ -192,25 +192,6 @@
         top: -32px;
         width: fit-content;
     }
-    .top-trim {
-      position: absolute;
-      background-image: url('/2023images/background-pattern-upper.png');
-      width: 100vw;
-      height: 106px;
-      opacity: 0.8;
-      background-size: contain;
-      mix-blend-mode: color-burn;
-    }
-
-    .bottom-trim {
-      position: absolute;
-      background-image: url('/2023images/background-pattern-lower.png');
-      width: 100vw;
-      height: 106px;
-      opacity: 0.8;
-      background-size: contain;
-      mix-blend-mode: color-burn;
-    }
 
     .center-container {
         min-height: 100vh;
@@ -246,7 +227,6 @@
 {% endblock %}
 
 {% block body %}
-<div class="top-trim"></div>
 <div class="center-container">
 
   <header>
@@ -310,5 +290,4 @@
       </div>
     </div>
   </div>
-  <div class="bottom-trim"></div>
 {% endblock %}

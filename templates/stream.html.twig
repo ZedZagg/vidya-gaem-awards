@@ -91,40 +91,10 @@
         text-shadow: 1px -1px #4ea24a, 2px -2px #4ea24a, 3px -3px #4ea24a, -1px 1px #da505f, -2px 2px #4ea24a, -3px 3px #4ea24a, 1px 1px #da505f, 2px 2px #061019, 3px 3px #061019, -4px 4px #061019;
         text-transform: uppercase;
     }
-
-    .top-trim {
-      position: relative;
-      mix-blend-mode: color-burn;
-      height: 0px;
-    }
-    .top-trim > div {
-      position: absolute;
-      background-image: url('/2023images/background-pattern-upper.png');
-      width: 100vw;
-      height: 106px;
-      opacity: 0.8;
-      background-size: contain;
-    }
-
-    .bottom-trim {
-      position: relative;
-      mix-blend-mode: color-burn;
-      height: 106px;
-    }
-    .bottom-trim > div {
-      background-image: url('/2023images/background-pattern-lower.png');
-      width: 100vw;
-      height: 106px;
-      opacity: 0.8;
-      background-size: contain;
-      mix-blend-mode: color-burn;
-    }
-
   </style>
 {% endblock %}
 
 {% block body %}
-<div class="top-trim"><div></div></div>
 <div class="center-container">
 
   <header>
@@ -179,5 +149,4 @@
     </script>
   </div>
 </div>
-<div class="bottom-trim"></div>
 {% endblock %}

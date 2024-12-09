@@ -56,40 +56,60 @@ header {
     }
   }
 
-  .title-text {
-    font-family: "Western Title";
-    color: black;
-    font-size: 19px;
-    line-height: 0.75;
-    //transform: rotateZ(-1.8deg);
-    //text-align: right;
-    position: relative;
-    z-index: 0;
-    text-transform: uppercase;
-    transform: scaleY(3);
-    top: -10px;
+  .right-container {
     max-width: 50%;
-    text-align: right;
+    overflow: hidden;
+    filter: brightness(1);
+    padding: 6px;
 
-    .line-1 {
-      //text-transform: uppercase;
+    .inner-border {
+      border: 2px solid rgba(149, 149, 147, 0.75);
+      padding: 10px;
+      mix-blend-mode: color-dodge;
     }
 
-    .line-2 {
-      font-size: 24px;
-      //color: #CF282F;
+    .inner-background {
+      background-image: url("/2024images/planks-seamless.png");
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0px;
+      z-index: -1;
+      left: 0px;
+      transform: rotate(1deg) scaleY(1.5);
+      filter: brightness(0.7) saturate(0.6);
     }
 
-    // when we move to two lines of header text
-    @media screen and (max-width: 1200px) {
-      font-size: 16px;
-    }
-
-
-    @media screen and (max-width: 500px) {
-      font-size: 20px;
-      transform: none;
-      text-align: center;
+    .title-text {
+      font-family: "Western Title";
+      color: #999999f5;
+      font-size: 74px;
+      position: relative;
+      text-transform: uppercase;
+      text-align: right;
+      line-height: 1;
+      top: 8px;
+  
+      .line-1 {
+        //text-transform: uppercase;
+      }
+  
+      .line-2 {
+        font-size: 24px;
+        //color: #CF282F;
+      }
+  
+      // when we move to two lines of header text
+      @media screen and (max-width: 1200px) {
+        font-size: 16px;
+      }
+  
+  
+      @media screen and (max-width: 500px) {
+        font-size: 20px;
+        transform: none;
+        text-align: center;
+      }
     }
   }
 }
@@ -1697,26 +1717,6 @@ a:hover {
     max-width: 400px;
     max-height: 400px;
   }
-}
-
-.top-trim {
-  position: absolute;
-  background-image: url('/2023images/background-pattern-upper.png');
-  width: 100vw;
-  height: 106px;
-  opacity: 0.8;
-  background-size: contain;
-  mix-blend-mode: color-burn;
-}
-
-.bottom-trim {
-  position: absolute;
-  background-image: url('/2023images/background-pattern-lower.png');
-  width: 100vw;
-  height: 106px;
-  opacity: 0.8;
-  background-size: contain;
-  mix-blend-mode: color-burn;
 }
 
 @media (max-width: 1800px) {

@@ -125,37 +125,10 @@
           color: lime;
       }
 
-      .top-trim {
-        position: relative;
-        mix-blend-mode: color-burn;
-        height: 0px;
-      }
-      .top-trim > div {
-        position: absolute;
-        background-image: url('/2023images/background-pattern-upper.png');
-        width: 100vw;
-        height: 106px;
-        top: 59px;
-        opacity: 0.8;
-        background-size: contain;
-      }
-
-      .bottom-trim {
-        position: relative;
-        mix-blend-mode: color-burn;
-        background-image: url('/2023images/background-pattern-lower.png');
-        width: 100vw;
-        height: 106px;
-        opacity: 0.8;
-        background-size: contain;
-        mix-blend-mode: color-burn;
-      }
-
   </style>
 {% endblock %}
 
 {% block content %}
-  <div class="top-trim"><div></div></div>
   <div class="center-container" style="padding-top: 68px;">
     <header>
       <div class="logo" href="{{ path('index') }}">
@@ -384,5 +357,4 @@
       </div>
     </div>
   </div>
-  <div class="bottom-trim"></div>
 {% endblock %}
