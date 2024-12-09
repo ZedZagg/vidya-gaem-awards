@@ -34,6 +34,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Western Title';
+  src: url('/2024images/Cowboy Movie.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*
 @font-face {
   font-family: 'Olde Serif';
