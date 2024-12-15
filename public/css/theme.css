@@ -36,7 +36,14 @@
 
 @font-face {
   font-family: 'Western Title';
-  src: url('/2024images/Cowboy Movie.ttf') format('truetype');
+  src: url('/2024images/fonts/Cowboy Movie.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Young Heart';
+  src: url('/2024images/fonts/Young Heart.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
