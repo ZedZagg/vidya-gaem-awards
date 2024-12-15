@@ -85,7 +85,10 @@
 
     <header>
       <a class="logo" href="{{ path('index') }}">
-        <img src="{{ asset('2024images/logo1.png') }}">
+        <picture>
+          <source media="(max-width: 800px)" srcset="{{ asset('2024images/logo1.png') }}">
+          <img src="{{ asset('2024images/logo1-long.png') }}">
+        </picture>
       </a>
       <div class="right-container">
         <div class="inner-border">
