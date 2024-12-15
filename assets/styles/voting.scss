@@ -147,7 +147,7 @@ header {
     //background: #fff;
     margin: 0 12px;
     padding: 12px 8px;
-    max-width: 700px;
+    max-width: 800px;
 
     color: rgba(180,80,22,0.8);
     text-shadow:
@@ -235,12 +235,12 @@ header {
     }
 
     &.left {
-      background-image: url("/2023images/arrow-left.png");
+      background-image: url("/2024images/revolver-sketch.png");
       order: 1;
     }
 
     &.right {
-      background-image: url("/2023images/arrow-left.png");
+      background-image: url("/2024images/revolver-sketch.png");
       order: 3;
       transform: scaleX(-1);
 
