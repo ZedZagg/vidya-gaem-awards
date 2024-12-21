@@ -7,6 +7,7 @@ use App\Entity\GameRelease;
 use App\Entity\TableHistory;
 use App\Service\AuditService;
 use App\Service\ConfigService;
+use App\Service\IgdbService;
 use App\Service\WikipediaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -115,6 +116,27 @@ class AutocompleterController extends AbstractController
             return $this->json(['error' => $e->getMessage()]);
         }
         $suggestions = $wikipedia->getStringListForAutocompleter($games);
+
+        return $this->json(['success' => true, 'suggestions' => $suggestions]);
+    }
+
+    public function igdb(IgdbService $igdb, Request $request): JsonResponse
+    {
+        $year = $request->query->get('year');
+
+        $allGames = [];
+        $offset = 0;
+
+        try {
+            do {
+                $games = $igdb->getGames((int)$year, $offset);
+                $allGames = [...$allGames, ...$games];
+                $offset = count($allGames);
+            } while (!empty($games));
+        } catch (Exception $e) {
+            return $this->json(['error' => $e->getMessage()]);
+        }
+        $suggestions = $igdb->getStringListForAutocompleter($allGames);
 
         return $this->json(['success' => true, 'suggestions' => $suggestions]);
     }

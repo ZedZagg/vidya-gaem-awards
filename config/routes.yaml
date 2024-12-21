@@ -75,9 +75,14 @@ removeVideoGame:
     controller: App\Controller\VideoGamesController::remove
     methods:    [POST]
 
-reloadVideoGames:
+reloadVideoGamesWikipedia:
     path:       /vidya/reload
-    controller: App\Controller\VideoGamesController::reload
+    controller: App\Controller\VideoGamesController::reloadWikipedia
+    methods:    [POST]
+
+reloadVideoGamesIgdb:
+    path:       /vidya/reload/igdb
+    controller: App\Controller\VideoGamesController::reloadIgdb
     methods:    [POST]
 
 #
@@ -184,6 +189,11 @@ autocompleterWikipedia:
     path:       /awards/autocompleters/ajax/wikipedia
     methods:    [GET]
     controller: App\Controller\AutocompleterController::wikipedia
+
+autocompleterIgdb:
+    path:       /awards/autocompleters/ajax/igdb
+    methods:    [GET]
+    controller: App\Controller\AutocompleterController::igdb
 
 #
 # TASKS

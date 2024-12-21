@@ -97,12 +97,8 @@
       flex-direction: column;
     }
 
-    .fa-windows {
+    .fa-desktop {
       color: #2BA8E1;
-    }
-
-    .fa-android {
-      color: #93C04A;
     }
 
     .fa-xbox {
@@ -113,7 +109,7 @@
       color: #2A32AD;
     }
 
-    .fa-puzzle-piece {
+    .fa-n {
       color: #E50019;
     }
 
@@ -138,15 +134,20 @@
         <div class="card mb-2">
           <div class="card-body game">
             <div class="title {{ game.name | length > 30 ? 'small-title' : '' }} mb-3">
-              <a href="{{ game.url }}" target="_blank" class="text-dark">{{ game.name }}</a>
+              {% if game.url %}
+                <a href="{{ game.url }}" target="_blank" class="text-dark">{{ game.name }}</a>
+              {% else %}
+                <span class="text-dark">{{ game.name }}</span>
+              {% endif %}
             </div>
 
             <div class="platforms mt-auto">
-              {% if game.pc %}<i class="fab fa-fw fa-windows"></i>{% endif %}
-              {% if game.x360 or game.xb1 or game.xsx %}<i class="fab fa-fw fa-xbox"></i>{% endif %}
-              {% if game.ps3 or game.ps4 or game.ps5 or game.vita %}<i class="fab fa-fw fa-playstation"></i>{% endif %}
-              {% if game.switch %}<i class="fas fa-fw fa-puzzle-piece"></i>{% endif %}
-              {% if game.mobile %}<i class="fab fa-fw fa-android"></i>{% endif %}
+              {% if game.pc %}<i class="fas fa-fw fa-desktop" title="PC"></i>{% endif %}
+              {% if game.x360 or game.xb1 or game.xsx %}<i class="fab fa-fw fa-xbox" title="Xbox"></i>{% endif %}
+              {% if game.ps3 or game.ps4 or game.ps5 or game.vita %}<i class="fab fa-fw fa-playstation" title="PlayStation"></i>{% endif %}
+              {% if game.switch %}<i class="fas fa-fw fa-n" title="Nintendo"></i>{% endif %}
+              {% if game.mobile %}<i class="fas fa-fw fa-mobile-screen" title="Mobile"></i>{% endif %}
+              {% if game.vr %}<i class="fas fa-fw fa-head-side-goggles" title="VR"></i>{% endif %}
 
               <a href="#" class="remove-game float-end" data-title="{{ game.name | e('html_attr') }}" data-id="{{ game.id }}">×</a>
             </div>
@@ -157,17 +158,27 @@
   </div>
 
   {% if is_granted('ROLE_ADD_VIDEO_GAME') and not configService.isReadOnly %}
-    <button class="btn btn-primary my-3" type="button" data-bs-toggle="modal" data-bs-target="#addGameModal">
-      <i class="far fa-plus fa-fw"></i> Add a video game
-    </button>
+    <div class="d-flex">
+      <button class="btn btn-primary my-3" type="button" data-bs-toggle="modal" data-bs-target="#addGameModal">
+        <i class="far fa-plus fa-fw"></i> Add a video game
+      </button>
 
-    <button class="btn btn-warning my-3 float-end" type="button" id="wikipedia">
-      {% if games | length == 0 %}
-        <i class="far fa-file-download fa-fw"></i> Import list of games from Wikipedia
-      {% else %}
-        <i class="far fa-sync-alt fa-fw"></i> Reload list of games from Wikipedia
-      {% endif %}
-    </button>
+{#      <button class="btn btn-warning my-3 ms-auto" type="button" id="wikipedia">#}
+{#        {% if games | length == 0 %}#}
+{#          <i class="far fa-file-download fa-fw me-1"></i> Import list of games from Wikipedia#}
+{#        {% else %}#}
+{#          <i class="far fa-sync-alt fa-fw me-1"></i> Reload list of games from Wikipedia#}
+{#        {% endif %}#}
+{#      </button>#}
+
+      <button class="btn btn-warning my-3 ms-auto" type="button" id="igdb">
+        {% if games | length == 0 %}
+          <i class="far fa-file-download fa-fw"></i> Import list of games from IGDB
+        {% else %}
+          <i class="far fa-sync-alt fa-fw"></i> Reload list of games from IGDB
+        {% endif %}
+      </button>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="addGameModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -288,14 +299,35 @@
                 });
             });
 
-            $('#wikipedia').click(function (event) {
+            $('#wikipedia').on('click', function (event) {
                 event.preventDefault();
 
                 if (!confirm('Are you sure you want to do this? Any games that have been manually added will be kept.')) {
                     return;
                 }
 
-                $.post("{{ path('reloadVideoGames') }}", null, function (response) {
+                $.post("{{ path('reloadVideoGamesWikipedia') }}", null, function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+                        alert('An error occurred: ' + response.error);
+                    }
+                }, 'json').fail(function (response) {
+                    alert('An error occured: ' + response.status);
+                });
+            });
+
+            $('#igdb').on('click', function (event) {
+                event.preventDefault();
+
+                if (!confirm('Are you sure you want to do this? Any games that have been manually added will be kept. (Note: this process gets 500 games at a time so it may take a while to finish. The page will appear to be doing nothing in the meantime. Do not click the button again.)')) {
+                    return;
+                }
+
+                $('#wikipedia').attr('disabled', 'disabled');
+                $('#igdb').attr('disabled', 'disabled');
+
+                $.post("{{ path('reloadVideoGamesIgdb') }}", null, function (response) {
                     if (response.success) {
                         window.location.reload();
                     } else {

@@ -402,7 +402,7 @@ class WikipediaService
     {
         if ($deleteExisting) {
             foreach ($this->em->getRepository(GameRelease::class)->findAll() as $gameRelease) {
-                if (!$gameRelease->isManuallyAdded()) {
+                if ($gameRelease->getSource() === 'wikipedia') {
                     $this->em->remove($gameRelease);
                 }
             }
@@ -416,6 +416,8 @@ class WikipediaService
 
         foreach ($games as $title => $platforms) {
             $gameRelease = new GameRelease($title);
+            $gameRelease->setUrl('https://en.wikipedia.org/wiki/' . urlencode(str_replace(' ', '_', $title)));
+            $gameRelease->setSource('wikipedia');
             foreach ($platforms as $platform) {
                 if (method_exists($gameRelease, 'set' . $platform)) {
                     $gameRelease->{'set'.$platform}(true);

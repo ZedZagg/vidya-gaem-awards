@@ -98,23 +98,34 @@
                 </div>
               </div>
               <div class="form-group row">
-                <div class="col-lg-10 col-sm-9 offset-lg-2 offset-sm-3">
+                <div class="col-lg-2 col-sm-3 col-form-label">Import</div>
+                <div class="col-lg-10 col-sm-9">
+{#                  <button class="btn btn-outline-secondary" type="button" onclick="$('#wikipedia-selection').toggle();" id="wikipedia-button">#}
+{#                    Import suggestions from Wikipedia article#}
+{#                  </button>#}
 
-                  <button class="btn btn-outline-secondary" type="button" onclick="$(this).hide(); $('#wikipedia-selection').show();" id="wikipedia-button">
-                    Import suggestions from Wikipedia article
+{#                  <div class="input-group my-2" id="wikipedia-selection" style="display: none; max-width: 300px;">#}
+{#                    <select class="form-select">#}
+{#                      <option value>Select a year</option>#}
+{#                      {% for year in ('now'|date("Y"))..1995 %}#}
+{#                        <option value="{{ year }}">{{ year }} in video gaming</option>#}
+{#                      {% endfor %}#}
+{#                    </select>#}
+{#                    <button class="btn btn-outline-secondary" type="button">Import</button>#}
+{#                  </div>#}
+
+{#                  <small class="form-text text-dark" id="wikipedia-message"></small>#}
+
+                  <button class="btn btn-outline-secondary" type="button" onclick="$('#igdb-selection').toggle();" id="igdb-button">
+                    Import suggestions from IGDB
                   </button>
 
-                  <div class="input-group" id="wikipedia-selection" style="display: none; max-width: 300px;">
-                    <select class="form-select">
-                      <option value>Select a year</option>
-                      {% for year in ('now'|date("Y"))..1995 %}
-                        <option value="{{ year }}">{{ year }} in video gaming</option>
-                      {% endfor %}
-                    </select>
+                  <div class="input-group my-2" id="igdb-selection" style="display: none; max-width: 300px;">
+                    <input class="form-control" placeholder="Year" type="number" min="1950" max="{{ "now" | date('Y') }}">
                     <button class="btn btn-outline-secondary" type="button">Import</button>
                   </div>
 
-                  <small class="form-text text-dark" id="wikipedia-message"></small>
+                  <small class="form-text text-dark" id="igdb-message"></small>
                 </div>
               </div>
             </div>
@@ -261,6 +272,37 @@
                       msg.text('');
                   }
               }, "json").fail(function (response) {
+                  handleError(response.status);
+                  msg.text('');
+              });
+          });
+
+          editDialog.find('#igdb-selection button').on('click', function () {
+              var year = editDialog.find('#igdb-selection input').val();
+
+              if (!year || !year.match(/^\d{4}$/) || year < 1950 || year > new Date().getFullYear()) {
+                  alert('Year is invalid. Must be between 1950 and the current year.');
+                  return;
+              }
+
+              if (!year || !confirm('Import suggestions using the list of games released in ' + year + '? Any existing suggestions will be removed.')) {
+                  return;
+              }
+
+              var msg = editDialog.find('#igdb-message');
+              msg.text('Please wait... we fetch games 500 at a time from IGDB, so this can take a little while to finish.');
+              editDialog.find('button').attr('disabled', 'disabled');
+
+              $.get("{{ path('autocompleterIgdb') }}", {year: year}, function (response) {
+                  if (response.success) {
+                      editDialog.find('button').removeAttr('disabled');
+                      msg.text(response.suggestions.length + ' suggestions successfully imported. Review the list of games before saving.');
+                      editDialog.find('textarea').val(response.suggestions.join("\r\n"));
+                  } else {
+                      handleError(response.error);
+                      msg.text('');
+                  }
+              }, 'json').fail(function (response) {
                   handleError(response.status);
                   msg.text('');
               });
