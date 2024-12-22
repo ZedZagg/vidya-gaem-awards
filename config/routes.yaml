@@ -175,6 +175,26 @@ nomineePost:
     methods:    [POST]
     controller: App\Controller\NomineeController::postAction
 
+nominationsIgnoreGroup:
+    path:       /nominees/{awardID}/group/ignore
+    methods:    [POST]
+    controller: App\Controller\NomineeController::nominationGroupIgnoreAction
+
+nominationsMergeGroup:
+    path: /nominees/{awardID}/group/merge
+    methods: [ POST ]
+    controller: App\Controller\NomineeController::nominationGroupMergeAction
+
+nominationsDemergeGroup:
+    path: /nominees/{awardID}/group/demerge
+    methods: [ POST ]
+    controller: App\Controller\NomineeController::nominationGroupDemergeAction
+
+nominationsUnlinkGroup:
+    path: /nominees/{awardID}/group/unlink
+    methods: [ POST ]
+    controller: App\Controller\NomineeController::nominationGroupUnlinkAction
+
 autocompleters:
     path:       /awards/autocompleters
     methods:    [GET]

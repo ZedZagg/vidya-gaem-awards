@@ -27,6 +27,13 @@ class UserNomination
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Award', inversedBy: 'userNominations')]
     private Award $award;
 
+    #[ORM\ManyToOne(inversedBy: 'nominations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserNominationGroup $nominationGroup = null;
+
+    #[ORM\ManyToOne]
+    private ?UserNominationGroup $originalGroup = null;
+
     public function __construct(Award $award, BaseUser $user, string $nomination)
     {
         $this->award = $award;
@@ -86,6 +93,30 @@ class UserNomination
     public function getAward(): Award
     {
         return $this->award;
+    }
+
+    public function getNominationGroup(): ?UserNominationGroup
+    {
+        return $this->nominationGroup;
+    }
+
+    public function setNominationGroup(?UserNominationGroup $nominationGroup): static
+    {
+        $this->nominationGroup = $nominationGroup;
+
+        return $this;
+    }
+
+    public function getOriginalGroup(): ?UserNominationGroup
+    {
+        return $this->originalGroup;
+    }
+
+    public function setOriginalGroup(?UserNominationGroup $originalGroup): static
+    {
+        $this->originalGroup = $originalGroup;
+
+        return $this;
     }
 }
 

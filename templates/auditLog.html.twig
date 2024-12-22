@@ -49,6 +49,15 @@
             <code>{{ action.data1 }}</code>
           </div>
         {% endif %}
+        {% if action.action starts with 'nomination-group' %}
+          <div style="margin-left: 31px; margin-top: 5px;">
+            {% if entity %}
+              <code>{{ action.data1 }}</code> - {{ entity.name }}
+            {% else %}
+              <code>{{ action.data1 }}</code> - <code>{{ action.data2 }}</code>
+            {% endif %}
+          </div>
+        {% endif %}
         {% if action.action starts with 'nominee' %}
           <div style="margin-left: 31px; margin-top: 5px;">
             {% if entity and action.action != 'nominee-delete' %}

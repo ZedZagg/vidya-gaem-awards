@@ -1,6 +1,8 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\UserNomination;
+use App\Entity\UserNominationGroup;
 use App\Service\AuditService;
 use App\Service\ConfigService;
 use App\Service\FileService;
@@ -20,15 +22,23 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class NomineeController extends AbstractController
 {
-    public function indexAction(?string $awardID, EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Request $request): Response
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly AuthorizationCheckerInterface $authChecker,
+        private readonly ConfigService $configService,
+        private readonly AuditService $auditService,
+    ) {
+    }
+
+    public function indexAction(?string $awardID, Request $request): Response
     {
-        $query = $em->createQueryBuilder()
+        $query = $this->em->createQueryBuilder()
             ->select('a')
             ->from(Award::class, 'a', 'a.id')
             ->where('a.enabled = true')
             ->orderBy('a.order', 'ASC');
 
-        if (!$authChecker->isGranted('ROLE_AWARDS_SECRET')) {
+        if (!$this->authChecker->isGranted('ROLE_AWARDS_SECRET')) {
             $query->andWhere('a.secret = false');
         }
         $awards = $query->getQuery()->getResult();
@@ -37,9 +47,9 @@ class NomineeController extends AbstractController
 
         if ($awardID) {
             /** @var Award $award */
-            $award = $em->getRepository(Award::class)->find($awardID);
+            $award = $this->em->getRepository(Award::class)->find($awardID);
 
-            if (!$award || ($award->isSecret() && !$authChecker->isGranted('ROLE_AWARDS_SECRET'))) {
+            if (!$award || ($award->isSecret() && !$this->authChecker->isGranted('ROLE_AWARDS_SECRET'))) {
                 $this->addFlash('error', 'Invalid award ID specified.');
                 return $this->redirectToRoute('nomineeManager');
             }
@@ -64,11 +74,25 @@ class NomineeController extends AbstractController
                 return $nominee->getName();
             }, $nomineesArray);
 
+
+            // Get all userNominationGroups for the Award, sorted by number of nominations that the group has
+            // (use the relationship between UserNominationGroup and UserNomination to count nominations)
+            $userNominationGroups = $this->em->createQueryBuilder()
+                ->select('ung')
+                ->from(UserNominationGroup::class, 'ung')
+                ->where('ung.award = :award')
+                ->setParameter('award', $award)
+                ->orderBy('SIZE(ung.nominations)', 'DESC')
+                ->addOrderBy('ung.name', 'ASC')
+                ->getQuery()
+                ->getResult();
+
             $awardVariables = [
                 'alphabeticalSort' => $alphabeticalSort,
                 'autocompleters' => $autocompleters,
                 'nominees' => $nomineesArray,
                 'nomineeNames' => $nomineeNames,
+                'userNominationGroups' => $userNominationGroups,
             ];
         }
 
@@ -79,19 +103,13 @@ class NomineeController extends AbstractController
         ], $awardVariables));
     }
 
-    public function postAction(string $awardID, ConfigService $configService, EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Request $request, AuditService $auditService, FileService $fileService): JsonResponse
+    public function postAction(string $awardID, Request $request, FileService $fileService): Response
     {
-        if ($configService->isReadOnly()) {
-            return $this->json(['error' => 'The site is currently in read-only mode. No changes can be made.']);
-        }
-
         /** @var Award $award */
-        $award = $em->getRepository(Award::class)->find($awardID);
+        $award = $this->em->getRepository(Award::class)->find($awardID);
 
-        if (!$award || ($award->isSecret() && !$authChecker->isGranted('ROLE_AWARDS_SECRET'))) {
-            return $this->json(['error' => 'Invalid award specified.']);
-        } elseif (!$award->isEnabled()) {
-            return $this->json(['error' => 'Award isn\'t enabled.']);
+        if ($response = $this->permissionCheck($award)) {
+            return $response;
         }
 
         $post = $request->request;
@@ -114,6 +132,18 @@ class NomineeController extends AbstractController
             $nominee
                 ->setAward($award)
                 ->setShortName($post->get('id'));
+
+            if ($post->has('group')) {
+                $group = $this->em->getRepository(UserNominationGroup::class)->find($post->get('group'));
+                if (!$group || $group->getAward() !== $award) {
+                    return $this->json(['error' => 'Invalid nomination group. Refresh the page and try again.']);
+                } elseif ($group->getNominee()) {
+                    return $this->json(['error' => 'This nomination group is already linked to a nominee. Refresh the page and try again.']);
+                }
+
+                $group->setNominee($nominee);
+                $this->em->persist($group);
+            }
         } else {
             $nominee = $award->getNominee($post->get('id'));
             if (!$nominee) {
@@ -122,11 +152,11 @@ class NomineeController extends AbstractController
         }
 
         if ($action === 'delete') {
-            $em->remove($nominee);
-            $auditService->add(
+            $this->em->remove($nominee);
+            $this->auditService->add(
                 new Action('nominee-delete', $award->getId(), $nominee->getShortName())
             );
-            $em->flush();
+            $this->em->flush();
 
             return $this->json(['success' => true]);
         }
@@ -158,23 +188,23 @@ class NomineeController extends AbstractController
             ->setName($post->get('name'))
             ->setSubtitle($post->get('subtitle'))
             ->setFlavorText($post->get('flavorText'));
-        $em->persist($nominee);
-        $em->flush();
+        $this->em->persist($nominee);
+        $this->em->flush();
 
-        $auditService->add(
+        $this->auditService->add(
             new Action('nominee-' . $action, $award->getId(), $nominee->getShortName()),
             new TableHistory(Nominee::class, $nominee->getId(), $post->all())
         );
 
-        $em->flush();
+        $this->em->flush();
 
         return $this->json(['success' => true]);
     }
 
-    public function exportNomineesAction(EntityManagerInterface $em): Response
+    public function exportNomineesAction(): Response
     {
         /** @var Award[] $awards */
-        $awards = $em->createQueryBuilder()
+        $awards = $this->em->createQueryBuilder()
             ->select('a')
             ->from(Award::class, 'a')
             ->where('a.enabled = true')
@@ -215,10 +245,10 @@ class NomineeController extends AbstractController
         return $response;
     }
 
-    public function exportUserNominationsAction(EntityManagerInterface $em): Response
+    public function exportUserNominationsAction(): Response
     {
         /** @var Award[] $awards */
-        $awards = $em->createQueryBuilder()
+        $awards = $this->em->createQueryBuilder()
             ->select('a')
             ->from(Award::class, 'a')
             ->where('a.enabled = true')
@@ -254,5 +284,188 @@ class NomineeController extends AbstractController
 
         $response->headers->set('Content-Disposition', $disposition);
         return $response;
+    }
+
+    public function nominationGroupIgnoreAction(
+        string $awardID,
+        Request $request,
+    ): Response {
+        /** @var Award $award */
+        $award = $this->em->getRepository(Award::class)->find($awardID);
+
+        if ($response = $this->permissionCheck($award)) {
+            return $response;
+        }
+
+        $groupId = $request->request->get('group');
+        $group = $this->em->getRepository(UserNominationGroup::class)->find($groupId);
+
+        if (!$group || $group->getAward() !== $award) {
+            return $this->json(['error' => 'Invalid nomination group specified.']);
+        }
+
+        if ($group->getMergedInto()) {
+            return $this->json(['error' => 'Cannot change the ignored status of a nomination group that has previously been merged.']);
+        }
+
+        if ($group->getNominee()) {
+            return $this->json(['error' => 'Cannot change the ignored status of a nomination group that is linked to a nominee.']);
+        }
+
+        $ignore = $request->request->get('ignore') === 'true';
+        $group->setIgnored($ignore);
+
+        $this->auditService->add(
+            new Action($ignore ? 'nomination-group-ignored' : 'nomination-group-unignored', $award->getId(), $group->getId()),
+            new TableHistory(UserNominationGroup::class, $group->getId(), $request->request->all())
+        );
+
+        $this->em->persist($group);
+        $this->em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+    public function nominationGroupMergeAction(
+        string $awardID,
+        Request $request,
+    ): Response
+    {
+        /** @var Award $award */
+        $award = $this->em->getRepository(Award::class)->find($awardID);
+
+        if ($response = $this->permissionCheck($award)) {
+            return $response;
+        }
+
+        $fromId = $request->request->get('from');
+        $fromGroup = $this->em->getRepository(UserNominationGroup::class)->find($fromId);
+
+        $toId = $request->request->get('to');
+        $toGroup = $this->em->getRepository(UserNominationGroup::class)->find($toId);
+
+        if (!$fromGroup || $fromGroup->getAward() !== $award || !$toGroup || $toGroup->getAward() !== $award) {
+            return $this->json(['error' => 'Invalid nomination group specified.']);
+        }
+
+        if ($fromGroup->getMergedInto()) {
+            return $this->json(['error' => 'This nomination group has already been merged.']);
+        }
+
+        if ($toGroup->getMergedInto()) {
+            return $this->json(['error' => 'You cannot select a nomination group that has already been merged.']);
+        }
+
+        if ($fromGroup->getNominee()) {
+            return $this->json(['error' => 'Cannot merge from a nomination group that is linked to a nominee. (You can still merge into it.)']);
+        }
+
+        $fromGroup->setIgnored(false);
+        $fromGroup->setMergedInto($toGroup);
+        $this->em->persist($fromGroup);
+
+        foreach ($fromGroup->getNominations() as $nomination) {
+            $nomination->setNominationGroup($toGroup);
+            $nomination->setOriginalGroup($fromGroup);
+            $this->em->persist($nomination);
+        }
+
+        $this->auditService->add(
+            new Action('nomination-group-merged', $fromGroup->getId(), $toGroup->getId()),
+            new TableHistory(UserNominationGroup::class, $fromGroup->getId(), $request->request->all())
+        );
+
+        $this->em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+    private function permissionCheck(?Award $award): ?Response
+    {
+        if ($this->configService->isReadOnly()) {
+            return $this->json(['error' => 'The site is currently in read-only mode. No changes can be made.']);
+        }
+
+        if (!$award || ($award->isSecret() && !$this->authChecker->isGranted('ROLE_AWARDS_SECRET'))) {
+            return $this->json(['error' => 'Invalid award specified.']);
+        }
+
+        if (!$award->isEnabled()) {
+            return $this->json(['error' => 'Award isn\'t enabled.']);
+        }
+
+        return null;
+    }
+
+    public function nominationGroupDemergeAction(
+        string $awardID,
+        Request $request,
+    ): Response
+    {
+        /** @var Award $award */
+        $award = $this->em->getRepository(Award::class)->find($awardID);
+
+        if ($response = $this->permissionCheck($award)) {
+            return $response;
+        }
+
+        $groupId = $request->request->get('group');
+        $group = $this->em->getRepository(UserNominationGroup::class)->find($groupId);
+
+        if (!$group || $group->getAward() !== $award) {
+            return $this->json(['error' => 'Invalid nomination group specified.']);
+        }
+
+        if (!$group->getMergedInto()) {
+            return $this->json(['error' => 'This nomination group has not been merged.']);
+        }
+
+        $group->setMergedInto(null);
+
+        $nominations = $this->em->getRepository(UserNomination::class)->findBy(['originalGroup' => $group]);
+
+        foreach ($nominations as $nomination) {
+            $nomination->setNominationGroup($group);
+            $nomination->setOriginalGroup(null);
+            $this->em->persist($nomination);
+        }
+
+        $this->auditService->add(
+            new Action('nomination-group-demerged', $group->getId()),
+            new TableHistory(UserNominationGroup::class, $group->getId(), $request->request->all())
+        );
+
+        $this->em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+    public function nominationGroupUnlinkAction(string $awardID, Request $request)
+    {
+        /** @var Award $award */
+        $award = $this->em->getRepository(Award::class)->find($awardID);
+
+        if ($response = $this->permissionCheck($award)) {
+            return $response;
+        }
+
+        $groupId = $request->request->get('group');
+        $group = $this->em->getRepository(UserNominationGroup::class)->find($groupId);
+
+        if (!$group || $group->getAward() !== $award) {
+            return $this->json(['error' => 'Invalid nomination group specified.']);
+        }
+
+        $group->setNominee(null);
+        $this->em->persist($group);
+
+        $this->auditService->add(
+            new Action('nomination-group-updated', $group->getId()),
+            new TableHistory(UserNominationGroup::class, $group->getId(), ['action' => 'unlink'])
+        );
+
+        $this->em->flush();
+
+        return $this->json(['success' => true]);
     }
 }

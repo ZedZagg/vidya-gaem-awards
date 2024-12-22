@@ -208,28 +208,43 @@
       display: flex;
       align-items: center;
       border: 1px solid #BBB;
-      border-bottom: none;
+      /*border-bottom: none;*/
       padding-left: 10px;
       flex-grow: 1;
       background: #E9E9E9;
       align-self: stretch;
+      margin-top: -1px;
+
+      --bs-btn-border-radius: auto;
+      text-align: left;
+
+      /*--bs-btn-hover-color: red;*/
+      /*--bs-btn-hover-bg: red;*/
+      /*--bs-btn-hover-border-color: red;*/
     }
 
     .nominations .nomination-container:first-child .nomination {
-      border-top-left-radius: .25rem;
-      border-top-right-radius: .25rem;
+      /*border-top-left-radius: .25rem;*/
+      /*border-top-right-radius: .25rem;*/
     }
 
     .nomination-last-visible .nomination {
-      border-bottom-left-radius: .25rem;
-      border-bottom-right-radius: .25rem;
-      border-bottom: 1px solid #BBB;
+      /*border-bottom-left-radius: .25rem;*/
+      /*border-bottom-right-radius: .25rem;*/
+      /*border-bottom: 1px solid #BBB;*/
     }
 
     .nomination-container {
       display: flex;
       align-items: center;
       height: 30px;
+    }
+
+    .nomination-container {
+        .dropdown-menu {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
     }
 
     .nomination-count {
@@ -254,6 +269,19 @@
     }
 
     .nomination:hover {
+    }
+
+    .nomination-container.hidden {
+        display: none;
+        text-decoration: line-through;
+    }
+
+    .nomination-container.merging-from .nomination {
+        background-color: #b6d4fe;
+    }
+
+    .nominations.show-all .nomination-container.hidden {
+        display: flex;
     }
   </style>
 {% endblock %}
@@ -374,25 +402,55 @@
                       {% endif %}
 
                       <p style="text-align: center; font-size: small;">
-                        {% if alphabeticalSort %}
-                          Currently sorted alphabetically <a href="?sort=total">(sort by total)</a>
-                        {% else %}
-                          Currently sorted by total <a href="?sort=alphabetical">(sort alphabetically)</a>
-                        {% endif %}
+{#                        {% if alphabeticalSort %}#}
+{#                          Currently sorted alphabetically <a href="?sort=total">(sort by total)</a>#}
+{#                        {% else %}#}
+{#                          Currently sorted by total <a href="?sort=alphabetical">(sort alphabetically)</a>#}
+{#                        {% endif %}#}
+                        <label><input type="checkbox" id="show-all-user-nominations"> Show merged and ignored nominations </label>
                       </p>
 
+                      <div class="alert alert-primary d-none" id="merge-message">
+                        <i class="fa-solid fa-merge fa-fw"></i> You are in merge mode. Select another user nomination and all nominations from <strong id="merging-from-name"></strong> will be moved to it, or select the same user nomination to cancel.
+                      </div>
+
                       <div class="nominations mb-2">
-                        {% for nomination in award.getUserNominations(alphabeticalSort) %}
-                          <div class="nomination-container {{ loop.index == 15 ? 'nomination-last-visible' : '' }} {{ loop.index > 15 ? 'nomination-overflow' : '' }}">
-                            {% if nomination.title in nomineeNames %}
+                        {% for group in userNominationGroups %}
+                          <div class="nomination-container {{ group.ignored or group.mergedInto ? 'hidden' : '' }} {{ loop.index == 15 ? 'nomination-last-visible' : '' }} {{ loop.index > 15 ? 'nomination-overflow' : '' }}" data-name="{{ group.name | e('html_attr') }}" data-id="{{ group.id | e('html_attr') }}">
+                            {% if group.nominee %}
                               <span class="nomination-index text-success"><i class="fas fa-check"></i></span>
+                            {% elseif group.mergedInto %}
+                              <span class="nomination-index text-muted"><i class="fas fa-merge"></i></span>
+                            {% elseif group.ignored %}
+                              <span class="nomination-index text-muted" title="Ignored"><i class="far fa-ban"></i></span>
                             {% else %}
                               <small class="nomination-index text-muted">{{ loop.index }}</small>
                             {% endif %}
-                            <div class="nomination">
-                              <div class="nomination-title">{{ nomination.title }}</div>
-                              <div class="nomination-count">{{ nomination.count }}</div>
-                            </div>
+                            <button class="nomination btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" data-bs-offset="0,0">
+                              <div class="nomination-title">{{ group.name }}</div>
+                              <div class="nomination-count">{{ group.nominations.count }}</div>
+                            </button>
+                            <ul class="dropdown-menu nomination-dropdown">
+                              {% if group.nominee %}
+                                <li><a class="dropdown-item" href="#" data-action="unlink"><i class="fa-solid fa-unlink fa-fw"></i> Unlink from nominee</a></li>
+                              {% else %}
+                                {% if not group.ignored and not group.mergedInto %}
+                                  <li><a class="dropdown-item" href="#" data-action="add-nominee"><i class="fa-solid fa-plus fa-fw"></i> Add as nominee</a></li>
+                                {% endif %}
+                                {% if group.mergedInto %}
+                                  <li><a class="dropdown-item" href="#" data-action="demerge"><i class="fa-solid fa-arrow-rotate-left fa-fw"></i> Undo merge</a></li>
+                                {% else %}
+                                  <li><a class="dropdown-item" href="#" data-action="merge"><i class="fa-solid fa-merge fa-fw"></i> Merge into...</a></li>
+                                {% endif %}
+                                {% if not group.mergedInto %}
+                                  {% if group.ignored %}
+                                    <li><a class="dropdown-item" href="#" data-action="unignore"><i class="fa-regular fa-eye fa-fw"></i> Stop ignoring nominations</a></li>
+                                  {% else %}
+                                    <li><a class="dropdown-item" href="#" data-action="ignore"><i class="fa-regular fa-eye-slash fa-fw"></i> Ignore nominations</a></li>
+                                  {% endif %}
+                                {% endif %}
+                              {% endif %}
+                            </ul>
                           </div>
                         {% endfor %}
                       </div>
@@ -483,6 +541,10 @@
                 <div class="col-sm-9">
                   <input class="form-control" type="text" id="info-name" placeholder="Monster Girl Quest" required
                          name="name">
+                  <small id="info-nomination" class="form-text" style="display: none;">
+                    This nominee will be linked to a user nomination. The name can safely be changed without unlinking it.
+                  </small>
+                  <input id="info-group" type="hidden" name="group">
                 </div>
               </div>
               <div class="form-group row">
@@ -604,9 +666,11 @@
           var editDialogInterval;
           var lastImageValue = "";
           var lastID = "";
+          let mergingFrom = null;
+          let mergingFromName = null;
 
           // When the new nominee button is clicked
-          $("#new").click(function () {
+          function openNewNomineeModal(name = '', group = '') {
               // Update the dialog action
               $("#form-id").removeAttr("name");
               $("#form-action").attr("value", "new");
@@ -620,7 +684,9 @@
               $("#dialog-edit-image").css("background-image", "");
 
               $("#info-id").val("");
-              $("#info-name").val("");
+              $("#info-name").val(name);
+              $("#info-nomination").toggle(name !== '');
+              $('#info-group').val(group);
               $("#info-subtitle").val("");
               $("#info-image").val("");
               $("#info-flavor").val("");
@@ -629,7 +695,9 @@
 
               // Show the dialog
               $("#dialog-edit").modal("show");
-          });
+          }
+
+          $("#new").on('click', () => openNewNomineeModal());
 
           // When an edit button is clicked
           $("#nominee-container").find(".nominee").click(function () {
@@ -655,6 +723,8 @@
 
               $("#info-id").val(nomineeID);
               $("#info-name").val(nominees[nomineeID].name);
+              $("#info-nomination").hide();
+              $('#info-group').val('');
               $("#info-subtitle").val(nominees[nomineeID].subtitle);
               $("#info-image").val("");
               $("#info-flavor").val(nominees[nomineeID].flavorText);
@@ -710,8 +780,6 @@
 
             // Send through the AJAX request to do the actual editing
             var formData = new FormData(this);
-            console.log(formData);
-
             $.ajax({
               url: "{{ path('nomineePost', {'awardID': award.id}) }}",
               type: 'POST',
@@ -720,8 +788,6 @@
               processData: false
             }).done(function (data) {
               currentlySubmitting = false;
-
-              console.log(data);
 
               if (data.success) {
 
@@ -780,6 +846,127 @@
                   $(this).hide();
               }
           });
+
+          $(".nomination-dropdown a").on('click', function (event) {
+              event.preventDefault();
+
+              const $button = $(this);
+              const $group = $button.closest('.nomination-container');
+              const groupId = $group.data('id');
+              const action = $button.data('action');
+              const name = $group.data('name');
+
+              if (action === 'ignore' || action === 'unignore') {
+                  if (!confirm(`Are you sure you want to ${action} nominations for "${name}"?`)) {
+                      return;
+                  }
+
+                  $.post("{{ path('nominationsIgnoreGroup', {awardID: award.id}) }}", {group: groupId, ignore: action === 'ignore'}, function (data) {
+                      if (data.success) {
+                          // TODO: handle better
+                          window.location.reload();
+                      } else {
+                          alert("An error occurred: " + data.error);
+                      }
+                  }, "json");
+
+                  return;
+              }
+
+              if (action === 'merge') {
+                  $('.nominations').addClass('merging');
+                  $group.addClass('merging-from');
+                  mergingFrom = groupId;
+                  mergingFromName = name;
+
+                  $('#merge-message').removeClass('d-none');
+                  $('#merging-from-name').text(name);
+
+                  setTimeout(() => {
+                      $('.nomination').attr('data-bs-toggle', 'disabled').removeClass('dropdown-toggle');
+                  }, 100);
+              }
+
+              if (action === 'demerge') {
+                  if (!confirm(`Are you sure you want to undo the merge of nominations from "${name}"?`)) {
+                      return;
+                  }
+
+                  $.post("{{ path('nominationsDemergeGroup', {awardID: award.id}) }}", {group: groupId}, function (data) {
+                      if (data.success) {
+                          // TODO: handle better
+                          window.location.reload();
+                      } else {
+                          alert("An error occurred: " + data.error);
+                      }
+                  }, "json");
+              }
+
+              if (action === 'unlink') {
+                  if (!confirm(`Are you sure you want to unlink the nominee from "${name}"?`)) {
+                      return;
+                  }
+
+                  $.post("{{ path('nominationsUnlinkGroup', {awardID: award.id}) }}", {group: groupId}, function (data) {
+                      if (data.success) {
+                          // TODO: handle better
+                          window.location.reload();
+                      } else {
+                          alert("An error occurred: " + data.error);
+                      }
+                  }, "json");
+              }
+
+              if (action === 'add-nominee') {
+                  openNewNomineeModal(name, groupId);
+              }
+          });
+
+          $('#show-all-user-nominations').on('change', function (e) {
+              e.preventDefault();
+
+              if ($(this).is(':checked')) {
+                  $('.nominations').addClass('show-all');
+              } else {
+                  $('.nominations').removeClass('show-all');
+              }
+          });
+
+          $('.nomination').on('click', function (e) {
+              if (!mergingFrom) {
+                  return;
+              }
+
+              const $group = $(this).closest('.nomination-container');
+              const groupId = $group.data('id');
+
+              if (groupId === mergingFrom) {
+                  finishMerge();
+                  return;
+              }
+
+              if (!confirm(`Are you sure you want to merge all nominations from "${mergingFromName}" into "${name}"?`)) {
+                  return;
+              }
+
+              $.post("{{ path('nominationsMergeGroup', {awardID: award.id}) }}", {from: mergingFrom, to: groupId}, function (data) {
+                  if (data.success) {
+                      // TODO: handle better
+                      window.location.reload();
+                  } else {
+                      alert("An error occurred: " + data.error);
+                  }
+              }, "json");
+          });
+
+          function finishMerge() {
+              mergingFrom = null;
+              $('.nominations').removeClass('merging');
+              $('.nomination-container').removeClass('merging-from');
+              $('.nomination').attr('data-bs-toggle', 'dropdown').addClass('dropdown-toggle');
+              $('.nomination').removeClass('merging-from');
+              $('#merge-message').addClass('d-none');
+          }
       });
     </script>
   {% endif %}
