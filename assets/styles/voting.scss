@@ -121,6 +121,33 @@ header {
   left: -250px;
 }
 
+.inner-shadow {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  box-shadow: inset 0 0 15px rgb(11, 9, 9);
+}
+
+.plank-background {
+  background-image: url("/2024images/planks-seamless.png");
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  z-index: -1;
+  left: 0px;
+  transform: rotate(1deg) scaleY(1.5);
+  filter: brightness(0.7) saturate(0.6);
+}
+
+.plank-inner{
+  border: 2px solid rgba(149, 149, 147, 0.75);
+  padding: 10px;
+  mix-blend-mode: color-dodge;
+}
+
 /* Award` Header (including left/right navigation buttons) */
 .award-header {
   display: flex;
@@ -132,6 +159,9 @@ header {
   margin: 0 auto 20px;
   font-family: 'Young Heart', sans-serif;
   text-transform: capitalize;
+  background-image: url("/2024images/paper2.jpg");
+  -webkit-mask-image: url(/2023images/mask.png);
+  -webkit-mask-size: cover;
 
   //background-image: url(/2020images/tape.png);
   //background-size: 790px;
@@ -1283,8 +1313,8 @@ body {
 }
 
 .voteDropArea {
-  margin-bottom: 20px;
   padding: 5px;
+  padding-top: 50px;
   min-height: 185px;
   //border: 2px dashed #c2c5b5;
   transition: 0.2s all;
@@ -1298,13 +1328,10 @@ body {
                                             }
 
 .your-votes-container {
-  background: black;
-  border: 20px white ridge;
-  border-radius: 8px;
-  margin-left: -10px;
-  margin-right: -10px;
   margin-top: 20px;
   padding: 12px 8px;
+  position: relative;
+  overflow: clip;
 
   .your-votes-title-area {
     color: white;
@@ -1317,15 +1344,17 @@ body {
       margin-left: auto;
       margin-right: auto;
       width: fit-content;
-      font-size: 23px;
+      font-size: 46px;
       line-height: 23px;
       padding: 0 20px;
       background-color: black;
-      top: -32px;
+      top: 18px;
       position: relative;
-      font-family: 'NES Pixel', sans-serif;
+      font-family: "Western Title";
       min-height: 20px;
       text-align: center;
+      color: rgba(153, 153, 153, 0.9607843137);
+      mix-blend-mode: color-dodge;
     }
   }
 
