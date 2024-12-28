@@ -231,7 +231,7 @@
                     Your Votes
                   </div>
                 </div>
-                <div class="flexContainer voteDropArea plank-inner" id="voteDropAreaBottom"></div>
+                <div class="flexContainer voteDropArea" id="voteDropAreaBottom"></div>
 
                 {% if votingOpen %}
                   <div class="buttons" style="margin-top: 10px;">
@@ -246,8 +246,9 @@
                   </div>
                 {% endif %}
 
-                <div class="plank-background"></div>
-                <div class="inner-shadow"></div>
+                <div class="plank-background">
+                  <div class="plank-inner-border"></div>
+                </div>
 
               </div>
 
@@ -436,6 +437,10 @@
           <button class="btn btn-default btn-lootbox" id="resetRewardsButton" style="display: none;">Mute music</button>
           <button class="btn btn-default btn-lootbox" id="viewBonusCaptcha">Open CAPTCHA</button>
         </div>
+      </div>
+
+      <div class="plank-background">
+        <div class="plank-inner-border"></div>
       </div>
     </div>
 

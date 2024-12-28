@@ -121,31 +121,51 @@ header {
   left: -250px;
 }
 
-.inner-shadow {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  box-shadow: inset 0 0 15px rgb(11, 9, 9);
-}
-
 .plank-background {
-  background-image: url("/2024images/planks-seamless.png");
+  &::before {
+    background-image: url("/2024images/planks-seamless.png");
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    z-index: -1;
+    left: 0px;
+    transform: rotate(1deg) scaleY(1.5);
+    filter: brightness(0.7) saturate(0.6);
+    content: "";
+  }
+
+  &::after {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-shadow: inset 0 0 15px rgb(11, 9, 9);
+    content: "";
+  }
+
+  .plank-inner-border {
+    padding: 10px;
+    height: 100%;
+
+    &::after {
+      border: 2px solid rgba(149, 149, 147, 0.75);
+      mix-blend-mode: color-dodge;
+      height: 100%;
+      width: 100%;
+      content: "";
+      display: block;
+    }
+  }
+
   position: absolute;
   height: 100%;
   width: 100%;
   top: 0px;
-  z-index: -1;
   left: 0px;
-  transform: rotate(1deg) scaleY(1.5);
-  filter: brightness(0.7) saturate(0.6);
-}
-
-.plank-inner{
-  border: 2px solid rgba(149, 149, 147, 0.75);
-  padding: 10px;
-  mix-blend-mode: color-dodge;
+  z-index: -1;
+  overflow: clip;
 }
 
 /* Award` Header (including left/right navigation buttons) */
@@ -708,12 +728,6 @@ header {
 $card-width: 350px;
 
 #containerInventory {
-  background: black;
-  border: 20px white ridge;
-  border-radius: 8px;
-  color: white;
-  margin-left: -10px;
-  margin-right: -10px;
 
   .inventory-title-area {
     text-shadow: none;
@@ -721,7 +735,6 @@ $card-width: 350px;
     width: 100%;
 
     .title-text {
-      color: white;
       text-transform: uppercase;
       margin-left: auto;
       margin-right: auto;
@@ -1347,7 +1360,6 @@ body {
       font-size: 46px;
       line-height: 23px;
       padding: 0 20px;
-      background-color: black;
       top: 18px;
       position: relative;
       font-family: "Western Title";
