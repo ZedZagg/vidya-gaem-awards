@@ -130,7 +130,7 @@ header {
     top: 0px;
     z-index: -1;
     left: 0px;
-    transform: rotate(1deg) scaleY(1.5);
+    transform: rotate(1deg) scaleY(1.5) scaleX(1.1);
     filter: brightness(0.7) saturate(0.6);
     content: "";
   }
