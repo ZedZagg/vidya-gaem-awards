@@ -966,7 +966,7 @@ jQuery(function () {
     function unlockVotes() {
         $(".voteBox").removeClass("locked");
         $(".aNominee").removeClass("locked");
-        $('#submitReminder').text('Don\'t forget to click on "Submit Votes" below to save your votes!');
+        $('#submitReminder').text('Don\'t forget to click on "Submit" below to save your votes!');
 
         bottomAreaContainer.removeClass("locked");
         bottomAreaContainer.find('.your-votes').text("Your Votes (unsaved)");

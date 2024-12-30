@@ -100,181 +100,181 @@
       </div>
     </header>
 
-    {% if award %}
-      <div class="award-header">
-        <a href="{{ path('voting', {'awardID': prevAward.id}) }}" class="navigation left"></a>
-        <div class="award-name-container">
-          <div class="award-name">{{ award.name }}</div>
-          <div class="award-subtitle">{{ award.subtitle }}</div>
-        </div>
-        <a href="{{ path('voting', {'awardID': nextAward.id}) }}" class="navigation right"></a>
-      </div>
-    {% endif %}
-
     <div id="wrapper">
       {% if award %}
-        {% if votingStyle == 'legacy' %}
-          <div id="limitsDrag">
-            <div id="nomineeColumn" class="column">
+        <div class="poster-background">
+          <div class="award-header">
+            <a href="{{ path('voting', {'awardID': prevAward.id}) }}" class="navigation left"></a>
+            <div class="award-name-container">
+              <div class="award-name">{{ award.name }}</div>
+              <div class="award-subtitle">{{ award.subtitle }}</div>
+            </div>
+            <a href="{{ path('voting', {'awardID': nextAward.id}) }}" class="navigation right"></a>
+          </div>
 
-              <img src="/2016images/pickYourNominees.png" width="204" height="70" alt="Pick your nominees">
+          {% if votingStyle == 'legacy' %}
+            <div id="limitsDrag">
+              <div id="nomineeColumn" class="column">
 
-              {% for nominee in award.nominees | shuffle %}
+                <img src="/2016images/pickYourNominees.png" width="204" height="70" alt="Pick your nominees">
 
-                {% apply spaceless %}
-                  <div class="voteBox">
-                    <div id="nominee-{{ nominee.shortName }}" class="aNominee" data-order="{{ loop.index }}"
-                         data-nominee="{{ nominee.shortName }}">
-                      <img class="fakeBorder" src="/2016images/votebox_foreground.png">
-                      <img class="fakeBorder locked" src="/2016images/votebox_foreground_locked.png">
-                      {% if nominee.flavorText %}
-                        <div class="flavorText">{{ nominee.flavorText | nl2br }}</div>
-                      {% endif %}
-                      <img class="nomineeImage" src="{{ nominee.image ? nominee.image.url }}">
-                      <div class="nomineeInfo">
-                        <div class="number"></div>
-                        <div class="nomineeName">{{ nominee.name }}</div>
-                        <div class="nomineeSubtitle">{{ nominee.subtitle | raw }}</div>
+                {% for nominee in award.nominees | shuffle %}
+
+                  {% apply spaceless %}
+                    <div class="voteBox">
+                      <div id="nominee-{{ nominee.shortName }}" class="aNominee" data-order="{{ loop.index }}"
+                          data-nominee="{{ nominee.shortName }}">
+                        <img class="fakeBorder" src="/2016images/votebox_foreground.png">
+                        <img class="fakeBorder locked" src="/2016images/votebox_foreground_locked.png">
+                        {% if nominee.flavorText %}
+                          <div class="flavorText">{{ nominee.flavorText | nl2br }}</div>
+                        {% endif %}
+                        <img class="nomineeImage" src="{{ nominee.image ? nominee.image.url }}">
+                        <div class="nomineeInfo">
+                          <div class="number"></div>
+                          <div class="nomineeName">{{ nominee.name }}</div>
+                          <div class="nomineeSubtitle">{{ nominee.subtitle | raw }}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                {% endapply %}
+                  {% endapply %}
 
-              {% endfor %}
-
-            </div>
-
-            <div id="spacerColumn" class="column">
-              &nbsp;
-            </div>
-
-            {% if votingOpen or votingClosed %}
-              <div id="voteColumn" class="column">
-                <img src="/2016images/dragAndDrop.png" width="307px" height="70px" alt="Drag and drop to vote"/>
-                {% for nominee in award.nominees %}
-                  <div id="voteBox{{ loop.index }}" class="voteBox">
-                  </div>
                 {% endfor %}
+
+              </div>
+
+              <div id="spacerColumn" class="column">
+                &nbsp;
+              </div>
+
+              {% if votingOpen or votingClosed %}
+                <div id="voteColumn" class="column">
+                  <img src="/2016images/dragAndDrop.png" width="307px" height="70px" alt="Drag and drop to vote"/>
+                  {% for nominee in award.nominees %}
+                    <div id="voteBox{{ loop.index }}" class="voteBox">
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+            </div>
+          {% else %}
+            {#<div class="numberPopup {{ voteButtonSizeMap[award.nominees | length] }}" style="display: none;" id="numberPopup">#}
+            {#<div class="numberButtons">#}
+            {#{% for i in 1..award.nominees | length %}#}
+            {#<button id="numberButton{{ i }}" class="numberButton" data-value="{{ i }}">#{{ i }}</button>#}
+            {#{% endfor %}#}
+            {#</div>#}
+            {#</div>#}
+
+            {% apply spaceless %}
+            {% if votingOpen %}
+              <div class="mobileInstructions">
+                Tap on any nominee to make them your <span class="nextPreference">1st</span> preference.
               </div>
             {% endif %}
-
-          </div>
-        {% else %}
-          {#<div class="numberPopup {{ voteButtonSizeMap[award.nominees | length] }}" style="display: none;" id="numberPopup">#}
-          {#<div class="numberButtons">#}
-          {#{% for i in 1..award.nominees | length %}#}
-          {#<button id="numberButton{{ i }}" class="numberButton" data-value="{{ i }}">#{{ i }}</button>#}
-          {#{% endfor %}#}
-          {#</div>#}
-          {#</div>#}
-
-
-          <div id="dragLimit">
-            {% apply spaceless %}
-              {% if votingOpen %}
-                <div class="mobileInstructions">
-                  Tap on any nominee to make them your <span class="nextPreference">1st</span> preference.
-                </div>
-              {% endif %}
-              <div class="flexContainer voteDropArea" id="voteDropAreaTop">
-                {% for nominee in award.nominees | shuffle %}
-                  <div class="voteGroup" id="nominee-{{ nominee.shortName }}" data-nominee="{{ nominee.shortName }}" data-order="{{ loop.index }}">
-                    {#<button id="voteBox{{ loop.index }}" name="{{ nominee.shortName }}" class="preferenceButton"}">+</button>#}
-                    {#<input type="number" id="voteBox{{ loop.index }}" name="{{ nominee.shortName }}" class="preferenceInput" min="1" max="{{ award.nominees | length }}">#}
-                    {#<label for="voteBox{{ loop.index }}">#}
-                    <div class="voteBox">
-                      <div class="number" style="display: none;">{{ loop.index }}</div>
-                      <div class="nominee" style="background-image: url('{{ nominee.image ? nominee.image.url : asset('img/no-image-available.png') }}'); background-size: cover">
-                        <div class="fakeElement"></div>
-                        <div class="handle fakeHandle"></div>
-                        {% if votingOpen %}
-                          <div class="hoverOverlay overlayWhenTop {{ 'href=' in nominee.subtitle ? 'adjustForLink' : '' }}">
+            <div class="flexContainer voteDropArea" id="voteDropAreaTop">
+              {% for nominee in award.nominees | shuffle %}
+                <div class="voteGroup" id="nominee-{{ nominee.shortName }}" data-nominee="{{ nominee.shortName }}" data-order="{{ loop.index }}">
+                  {#<button id="voteBox{{ loop.index }}" name="{{ nominee.shortName }}" class="preferenceButton"}">+</button>#}
+                  {#<input type="number" id="voteBox{{ loop.index }}" name="{{ nominee.shortName }}" class="preferenceInput" min="1" max="{{ award.nominees | length }}">#}
+                  {#<label for="voteBox{{ loop.index }}">#}
+                  <div class="voteBox">
+                    <div class="number" style="display: none;">{{ loop.index }}</div>
+                    <div class="nominee">
+                      <div class="fakeElement" style="background-image: url('{{ nominee.image ? nominee.image.url : asset('img/no-image-available.png') }}'); background-size: cover"></div>
+                      <div class="handle fakeHandle"></div>
+                      {% if votingOpen %}
+                        <div class="hoverOverlay overlayWhenTop {{ 'href=' in nominee.subtitle ? 'adjustForLink' : '' }}">
+                                                <span>
+                                                  Click to make <strong>{{ nominee.name }}</strong>
+                                                  your&nbsp;<span class="nextPreference">1st</span>&nbsp;preference
+                                                </span>
+                        </div>
+                        <div class="hoverOverlay overlayWhenBottom {{ 'href=' in nominee.subtitle ? 'adjustForLink' : '' }}">
                                                   <span>
-                                                    Click to make <strong>{{ nominee.name }}</strong>
-                                                    your&nbsp;<span class="nextPreference">1st</span>&nbsp;preference
+                                                    Click to remove <strong>{{ nominee.name }}</strong>
+                                                    from your votes
                                                   </span>
-                          </div>
-                          <div class="hoverOverlay overlayWhenBottom {{ 'href=' in nominee.subtitle ? 'adjustForLink' : '' }}">
-                                                    <span>
-                                                      Click to remove <strong>{{ nominee.name }}</strong>
-                                                      from your votes
-                                                    </span>
-                          </div>
-                        {% endif %}
-                        {% if nominee.flavorText %}
-                          <div class="flavorText">
-                              {{ nominee.flavorText | nl2br }}
-                          </div>
-                        {% endif %}
-                        <div class="nomineeInfo">
-                          <div class="nomineeName">{{ nominee.name }}</div>
-                          <div class="nomineeSubtitle">{{ nominee.subtitle | replace({'href=': 'target="_blank" href='}) | raw }}</div>
                         </div>
-                        <div class="handle realHandle">
-                          <i class="fas fa-bars"></i>
+                      {% endif %}
+                      {% if nominee.flavorText %}
+                        <div class="flavorText">
+                            {{ nominee.flavorText | nl2br }}
                         </div>
+                      {% endif %}
+                      <div class="nomineeInfo">
+                        <div class="nomineeName">{{ nominee.name }}</div>
+                        <div class="nomineeSubtitle">{{ nominee.subtitle | replace({'href=': 'target="_blank" href='}) | raw }}</div>
+                      </div>
+                      <div class="handle realHandle">
+                        <i class="fas fa-bars"></i>
                       </div>
                     </div>
-                    {#</label>#}
                   </div>
-
-                {% endfor %}
-              </div>
-
-              {% if votingOpen %}
-                <h3 style="text-align: center; margin-top: 10px; margin-bottom: 10px;" id="submitReminder">After voting, click on "Submit Votes" below! Otherwise they won't save!</h3>
-              {% endif %}
-
-              <div class="your-votes-container">
-                <div class="your-votes-title-area">
-                  <div class="your-votes">
-                    Your Votes
-                  </div>
-                </div>
-                <div class="flexContainer voteDropArea" id="voteDropAreaBottom"></div>
-
-                {% if votingOpen %}
-                  <div class="buttons" style="margin-top: 10px;">
-                    <div id="btnResetVotes" class="btnSubmit" title="Reset Votes">
-                      <div class="hoverArrow">&gt;</div>
-                      <div>RESET</div>
-                    </div>
-                    <div id="btnLockVotes" class="btnSubmit" title="Submit Votes">
-                      <div class="hoverArrow">&gt;</div>
-                      <div>SUBMIT</div>
-                    </div>
-                  </div>
-                {% endif %}
-
-                <div class="plank-background">
-                  <div class="plank-inner-border"></div>
+                  {#</label>#}
                 </div>
 
+              {% endfor %}
+          </div>
+
+            {% if votingOpen %}
+              <h3 style="text-align: center; margin-top: 10px; margin-bottom: 10px;" id="submitReminder">Click "Submit" after voting to save your choices!</h3>
+            {% endif %}
+
+        </div>
+
+        <div id="dragLimit">
+            <div class="your-votes-container">
+              <div class="your-votes-title-area">
+                <div class="your-votes">
+                  Your Votes
+                </div>
               </div>
+              <div class="flexContainer voteDropArea" id="voteDropAreaBottom"></div>
 
               {% if votingOpen %}
                 <div class="buttons" style="margin-top: 10px;">
-                  <a href="{{ path('voting', {'awardID': nextAward.id}) }}" class="navigation next" title="Next award">
-                    <button class="btn btn-default">{{ nextAward.name }} >></button>
-                  </a>
+                  <div id="btnResetVotes" class="btnSubmit" title="Reset Votes">
+                    <div class="hoverArrow">&gt;</div>
+                    <div>RESET</div>
+                  </div>
+                  <div id="btnLockVotes" class="btnSubmit" title="Submit Votes">
+                    <div class="hoverArrow">&gt;</div>
+                    <div>SUBMIT</div>
+                  </div>
                 </div>
               {% endif %}
 
-            {% endapply %}
-          </div>
-
-          <div class="voteGroup placeholder" style="display: none;" id="dropPlaceholder">
-            <div class="voteBox">
-              <div class="nominee">
-                <div class="fakeElement"></div>
+              <div class="plank-background">
+                <div class="plank-inner-border"></div>
               </div>
+
+            </div>
+
+            {% if votingOpen %}
+              <div class="buttons" style="margin-top: 10px;">
+                <a href="{{ path('voting', {'awardID': nextAward.id}) }}" class="navigation next" title="Next award">
+                  <button class="btn btn-default">{{ nextAward.name }} >></button>
+                </a>
+              </div>
+            {% endif %}
+
+          {% endapply %}
+        </div>
+
+        <div class="voteGroup placeholder" style="display: none;" id="dropPlaceholder">
+          <div class="voteBox">
+            <div class="nominee">
+              <div class="fakeElement"></div>
             </div>
           </div>
-        {% endif %}
+        </div>
+      {% endif %}
 
-        {# {% if showFantasyPromo %}
-          <h2 class="fantasy-promo">How well can you predict /v/? Join the <a href="{{ path('predictions') }}" target="_blank">2020 Fantasy League</a> and get your message in the show to laugh at /v/'s shit taste</h2>
-        {% endif %} #}
+      {# {% if showFantasyPromo %}
+        <h2 class="fantasy-promo">How well can you predict /v/? Join the <a href="{{ path('predictions') }}" target="_blank">2020 Fantasy League</a> and get your message in the show to laugh at /v/'s shit taste</h2>
+      {% endif %} #}
 
       {% else %}
         <div id="startMessage">

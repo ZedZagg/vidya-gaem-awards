@@ -168,6 +168,17 @@ header {
   overflow: clip;
 }
 
+.poster-background {
+  background-size: cover;
+  background-image: url("/2024images/paper2.jpg");
+  -webkit-mask-image: url(/2023images/mask.png);
+  -webkit-mask-size: 100% 100%;
+  mask-image: url(/2023images/mask.png);
+  mask-size: 100% 100%;
+  padding: 30px;
+  padding-top: 60px;
+}
+
 /* Award` Header (including left/right navigation buttons) */
 .award-header {
   display: flex;
@@ -179,9 +190,6 @@ header {
   margin: 0 auto 20px;
   font-family: 'Young Heart', sans-serif;
   text-transform: capitalize;
-  background-image: url("/2024images/paper2.jpg");
-  -webkit-mask-image: url(/2023images/mask.png);
-  -webkit-mask-size: cover;
 
   //background-image: url(/2020images/tape.png);
   //background-size: 790px;
@@ -199,11 +207,7 @@ header {
     padding: 12px 8px;
     max-width: 800px;
 
-    color: rgba(180,80,22,0.8);
-    text-shadow:
-        0px 0px 2px rgba(0,0,0,0.3),
-        0px 0px 100px rgba(0,0,0,1),
-        0px 0px 20px rgba(255,255,255,1);
+    color: rgba(0, 0, 0, 0.8);
 
     //-webkit-mask-image: url(/2022images/mask.png);
     //-webkit-mask-size: cover;
@@ -222,7 +226,7 @@ header {
   }
 
   .award-name {
-    font-size: 2.7em;
+    font-size: 4.7em;
     line-height: 100%;
     margin-top: 10px;
 
@@ -253,12 +257,12 @@ header {
 
 
     @media screen and (max-width: 800px) {
-      font-size: 2em;
+      font-size: 3em;
     }
   }
 
   .award-subtitle {
-    font-size: 1.2em;
+    font-size: 1.8em;
 
     /*
     color: #0EBF8C;
@@ -375,10 +379,10 @@ header {
 }
 
 #submitReminder {
-  font-family: "Olde Title", serif;
+  font-family: "Young Heart", serif;
   color: rgba(180, 80, 22, 0.8);
-  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3), 0px 0px 100px rgb(0, 0, 0), 0px 0px 20px rgb(255, 255, 255);
   mix-blend-mode: color-burn;
+  font-size: 4em;
 }
 // END NEW SCSS
 
