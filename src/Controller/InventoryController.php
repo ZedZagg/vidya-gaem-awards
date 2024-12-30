@@ -25,14 +25,16 @@ class InventoryController extends AbstractController
         for ($i = 0; $i < 3; $i++) {
             if (random_int(1, 3) === 3) {
                 $rewards[] = ['type' => 'shekels', 'amount' => random_int(2, 1000)];
-            } else {
-                $item = $lootboxService->getRandomItem();
+            } elseif ($item = $lootboxService->getRandomItem()) {
                 $rewards[] = ['type' => 'item', 'item' => $item];
 
                 $userItem = new UserInventoryItem();
                 $userItem->setUser($user->getFuzzyID());
                 $userItem->setItem($item);
                 $em->persist($userItem);
+            } else {
+                // Failsafe for if no lootbox items are available
+                $rewards[] = ['type' => 'shekels', 'amount' => 1];
             }
         }
 
