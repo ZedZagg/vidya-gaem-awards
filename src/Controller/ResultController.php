@@ -40,6 +40,11 @@ class ResultController extends AbstractController
         foreach ($awards as $award) {
             $rankings = array_values($award->getOfficialResults() ? $award->getOfficialResults()->getResults() : []);
 
+            if (empty($rankings)) {
+                $results[$award->getId()] = null;
+                continue;
+            }
+
             $winners[$award->getId()] = $award->getNominee($rankings[0]);
 
             foreach ($rankings as $key => &$value) {

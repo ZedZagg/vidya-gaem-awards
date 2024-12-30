@@ -552,8 +552,12 @@
 
                   <div class="winner-name-container">
                     <div class="winner-text-vertical-center">
-                      <div class="winner-name">{{ winners[award.id].name | raw }}</div>
-                      <div class="winner-subtitle">{{ winners[award.id].subtitle | raw }}</div>
+                      {% if winners[award.id] is defined %}
+                        <div class="winner-name">{{ winners[award.id].name | raw }}</div>
+                        <div class="winner-subtitle">{{ winners[award.id].subtitle | raw }}</div>
+                      {% else %}
+                        <div class="winner-name">No winner yet</div>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -561,6 +565,8 @@
                   <div class="second-placers-container">
                       {% for result in results[award.id] %}
                         <div class="second-placer">{{ result | raw }}</div>
+                      {% else %}
+                        <div class="second-placer">No results yet</div>
                       {% endfor %}
                   </div>
                 </div>
