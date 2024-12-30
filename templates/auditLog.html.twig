@@ -16,7 +16,8 @@
       </tr>
     </thead>
   {% for action in actions %}
-    {% set entity = auditService.getEntity(action) %}
+    {% set entities = auditService.getMultiEntity(action) %}
+    {% set entity = entities.default %}
     <tr>
       <td>
         <abbr title="{{ action.timestamp.format('Y-m-d H:i:s') }}">
@@ -47,15 +48,6 @@
               {{ entity.name }} :
             {% endif %}
             <code>{{ action.data1 }}</code>
-          </div>
-        {% endif %}
-        {% if action.action starts with 'nomination-group' %}
-          <div style="margin-left: 31px; margin-top: 5px;">
-            {% if entity %}
-              <code>{{ action.data1 }}</code> - {{ entity.name }}
-            {% else %}
-              <code>{{ action.data1 }}</code> - <code>{{ action.data2 }}</code>
-            {% endif %}
           </div>
         {% endif %}
         {% if action.action starts with 'nominee' %}
@@ -116,6 +108,50 @@
         {% if action.action == 'remove-video-game' %}
           <div style="margin-left: 31px; margin-top: 5px;">
             {{ action.data1 }}
+          </div>
+        {% endif %}
+        {% if action.action == 'nomination-group-merged' or action.action == 'nomination-group-demerged' %}
+          <div style="margin-left: 31px; margin-top: 5px;">
+            <div>
+              {% if entities.data1.award %}
+                <a class="text-dark" href="{{ path('nomineeManager', {awardID: entities.data1.award.id}) }}" target="_blank">{{ entities.data1.award.name }}</a>
+              {% else %}
+                <code>deleted award</code>
+              {% endif %}
+            </div>
+            {% if action.action == 'nomination-group-merged' %}
+              <div>Merged from <code>{{ action.data1 }}</code> : <em>{{ entities.data1.name }}</em></div>
+              <div>Merged into <code>{{ action.data2 }}</code> : <em>{{ entities.data2.name }}</em></div>
+            {% else %}
+              <div>Demerged <code>{{ action.data1 }}</code> : <em>{{ entities.data1.name }}</em></div>
+              {% if action.data2 %}
+                <div>Previously merged into <code>{{ action.data2 }}</code> : <em>{{ entities.data2.name }}</em></div>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if action.action == 'nomination-group-ignored' or action.action == 'nomination-group-unignored' %}
+          <div style="margin-left: 31px; margin-top: 5px;">
+            <div>
+              {% if entities.data1 %}
+                <a class="text-dark" href="{{ path('nomineeManager', {awardID: entities.data1.id}) }}" target="_blank">{{ entities.data1.name }}</a>
+              {% else %}
+                <code>{{ action.data1 }}</code>
+              {% endif %}
+            </div>
+            <div><code>{{ action.data2 }}</code> : <em>{{ entities.data2.name }}</em></div>
+          </div>
+        {% endif %}
+        {% if action.action == 'nomination-group-updated' %}
+          <div style="margin-left: 31px; margin-top: 5px;">
+            <div>
+              {% if entity.award %}
+                <a class="text-dark" href="{{ path('nomineeManager', {awardID: entity.award.id}) }}" target="_blank">{{ entity.award.name }}</a>
+              {% else %}
+                <code>deleted award</code>
+              {% endif %}
+            </div>
+            <div><code>{{ entity.id }}</code> : <em>{{ entity.name }}</em></div>
           </div>
         {% endif %}
       </td>

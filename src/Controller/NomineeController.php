@@ -317,7 +317,6 @@ class NomineeController extends AbstractController
 
         $this->auditService->add(
             new Action($ignore ? 'nomination-group-ignored' : 'nomination-group-unignored', $award->getId(), $group->getId()),
-            new TableHistory(UserNominationGroup::class, $group->getId(), $request->request->all())
         );
 
         $this->em->persist($group);
@@ -372,7 +371,6 @@ class NomineeController extends AbstractController
 
         $this->auditService->add(
             new Action('nomination-group-merged', $fromGroup->getId(), $toGroup->getId()),
-            new TableHistory(UserNominationGroup::class, $fromGroup->getId(), $request->request->all())
         );
 
         $this->em->flush();
@@ -420,6 +418,8 @@ class NomineeController extends AbstractController
             return $this->json(['error' => 'This nomination group has not been merged.']);
         }
 
+        $mergedInto = $group->getMergedInto();
+
         $group->setMergedInto(null);
 
         $nominations = $this->em->getRepository(UserNomination::class)->findBy(['originalGroup' => $group]);
@@ -431,8 +431,7 @@ class NomineeController extends AbstractController
         }
 
         $this->auditService->add(
-            new Action('nomination-group-demerged', $group->getId()),
-            new TableHistory(UserNominationGroup::class, $group->getId(), $request->request->all())
+            new Action('nomination-group-demerged', $group->getId(), $mergedInto->getId())
         );
 
         $this->em->flush();

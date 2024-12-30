@@ -56,6 +56,7 @@ class AuditLogController extends AbstractController
             'nomination-group-ignored' => 'Ignored a user nomination for an award',
             'nomination-group-unignored' => 'Unignored a user nomination for an award',
             'nomination-group-merged' => 'Merged two user nominations',
+            'nomination-group-demerged' => 'Demerged two user nominations',
             'nomination-group-updated' => 'Updated a user nomination group',
         ];
 
