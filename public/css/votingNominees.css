@@ -97,7 +97,7 @@
 .fakeElement {
   /* This line is magic CSS which keeps the voting box at a fixed aspect ratio, even when the width changes. */
   /* This works because the percentage for the padding-top is a percentage of width. */
-  padding-top: calc(300 / 542 * 100%);
+  padding-top: calc(300 / 548 * 100%);
 }
 
 
