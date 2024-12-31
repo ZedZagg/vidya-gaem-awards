@@ -246,7 +246,9 @@
             <input type="hidden" id="info-id" name="id">
 
             <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="info-name">Name</label>
+              <label class="col-sm-3 col-form-label" for="info-name">
+                Name <span class="required" title="Required">*</span>
+              </label>
               <div class="col-sm-9">
                 <input class="form-control" type="text" id="info-name" placeholder="Uncommon" required
                        name="name" maxlength="50">
@@ -254,7 +256,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="info-drop-chance">Drop Chance</label>
+              <label class="col-sm-3 col-form-label" for="info-drop-chance">
+                Drop Chance <span class="required" title="Required">*</span>
+              </label>
               <div class="col-sm-9">
                 <input class="form-control" type="number" id="info-drop-chance" name="dropChance" min="0" max="99999.99999" placeholder="10.00" required step="any"
                        style="width: 150px;">
@@ -264,7 +268,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-sm-3 col-form-label" for="info-color">Color</label>
+              <label class="col-sm-3 col-form-label" for="info-color">
+                Color <span class="required" title="Required">*</span>
+              </label>
               <div class="col-sm-9">
                 <div class="color-container">
                   <input class="form-control" type="text" id="info-color" placeholder="#000000" required

@@ -16,18 +16,24 @@
         <div class="well">
           <form action="{{ path('newsAdd') }}" method="post" autocomplete="off">
             <div class="form-group">
-              <label for="news_text">Add news item</label>
+              <label for="news_text">Add news item <span class="required" title="Required">*</span></label>
               <input type="text" class="form-control" id="news_text" name="news_text" required autocomplete="off">
             </div>
             <div class="row">
               <div class="form-group col-sm-6">
+                <label for="date">
+                  Date <span class="required" title="Required">*</span>
+                </label>
                 <input type="text" class="form-control" id="date" name="date" required
                        placeholder="yyyy-mm-dd hh:mm:ss" value="{{ now.format('Y-m-d H:i:s') }}">
-                <span class="help-block">The news item won't be shown until this date.</span>
+                <span class="form-text">The news item won't be shown until this date.</span>
               </div>
               <div class="form-group col-sm-6">
+                <label for="user">
+                  Author <span class="required" title="Required">*</span>
+                </label>
                 <input type="text" class="form-control" id="user" disabled value="{{ app.user.name | e('html_attr') }}">
-                <span class="help-block">Unprivileged users won't see your name.</span>
+                <span class="form-text">Unprivileged users won't see your name.</span>
               </div>
             </div>
             <button type="submit" class="btn btn-primary">Add News</button>
