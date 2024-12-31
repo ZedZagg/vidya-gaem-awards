@@ -11,7 +11,6 @@ use Exception;
 use League\Csv\Writer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Action;
 use App\Entity\Award;
@@ -19,6 +18,7 @@ use App\Entity\Nominee;
 use App\Entity\TableHistory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class NomineeController extends AbstractController
 {
@@ -103,8 +103,12 @@ class NomineeController extends AbstractController
         ], $awardVariables));
     }
 
-    public function postAction(string $awardID, Request $request, FileService $fileService): Response
-    {
+    public function postAction(
+        string $awardID,
+        Request $request,
+        FileService $fileService,
+        SluggerInterface $slugger,
+    ): Response {
         /** @var Award $award */
         $award = $this->em->getRepository(Award::class)->find($awardID);
 
@@ -120,18 +124,35 @@ class NomineeController extends AbstractController
         }
 
         if ($action === 'new') {
-            if ($award->getNominee($post->get('id'))) {
-                return $this->json(['error' => 'A nominee with that ID already exists for this award.']);
-            } elseif (!$post->get('id')) {
-                return $this->json(['error' => 'You need to enter an ID.']);
-            } elseif (preg_match('/[^a-z0-9-]/', $post->get('id'))) {
-                return $this->json(['error' => 'ID can only contain lowercase letters, numbers and dashes.']);
+            if ($post->get('id')) {
+                $id = $post->get('id');
+                if ($award->getNominee($id)) {
+                    return $this->json(['error' => 'A nominee with that ID already exists for this award.']);
+                } elseif (preg_match('/[^a-z0-9-]/', $id)) {
+                    return $this->json(['error' => 'ID can only contain lowercase letters, numbers and dashes.']);
+                }
+            } else {
+                // Generate an ID automatically if one isn't provide.
+                // Limits to 45 characters, breaking at spaces where possible.
+                $id = $slugger->slug($post->get('name'))
+                    ->lower()
+                    ->replace('-', ' ')
+                    ->wordwrap(45, "\n", true)
+                    ->replace(' ', '-')
+                    ->split("\n")[0]
+                    ->toString();
+
+                if (empty($id)) {
+                    return $this->json(['error' => 'An ID could not be automatically generated from the name. Please provide one.']);
+                } elseif ($award->getNominee($id)) {
+                    return $this->json(['error' => 'The automatically generated ID "' . $id . '" is already in use for this award.']);
+                }
             }
 
             $nominee = new Nominee();
             $nominee
                 ->setAward($award)
-                ->setShortName($post->get('id'));
+                ->setShortName($id);
 
             if ($post->has('group')) {
                 $group = $this->em->getRepository(UserNominationGroup::class)->find($post->get('group'));
