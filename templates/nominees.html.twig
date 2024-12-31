@@ -415,16 +415,19 @@
                       </div>
 
                       <div class="nominations mb-2">
+                        {% set count = 1 %}
                         {% for group in userNominationGroups %}
-                          <div class="nomination-container {{ group.ignored or group.mergedInto ? 'hidden' : '' }} {{ loop.index == 15 ? 'nomination-last-visible' : '' }} {{ loop.index > 15 ? 'nomination-overflow' : '' }}" data-name="{{ group.name | e('html_attr') }}" data-id="{{ group.id | e('html_attr') }}">
+                          <div class="nomination-container {{ group.ignored or group.mergedInto ? 'hidden' : '' }} {{ count == 15 ? 'nomination-last-visible' : '' }} {{ count > 15 ? 'nomination-overflow' : '' }}" data-name="{{ group.name | e('html_attr') }}" data-id="{{ group.id | e('html_attr') }}">
                             {% if group.nominee %}
                               <span class="nomination-index text-success"><i class="fas fa-check"></i></span>
+                              {% set count = count + 1 %}
                             {% elseif group.mergedInto %}
                               <span class="nomination-index text-muted"><i class="fas fa-merge"></i></span>
                             {% elseif group.ignored %}
                               <span class="nomination-index text-muted" title="Ignored"><i class="far fa-ban"></i></span>
                             {% else %}
-                              <small class="nomination-index text-muted">{{ loop.index }}</small>
+                              <small class="nomination-index text-muted">{{ count }}</small>
+                              {% set count = count + 1 %}
                             {% endif %}
                             <button class="nomination btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" data-bs-offset="0,0">
                               <div class="nomination-title">{{ group.name }}</div>
