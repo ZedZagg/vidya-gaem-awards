@@ -154,7 +154,7 @@ class NomineeController extends AbstractController
                 ->setAward($award)
                 ->setShortName($id);
 
-            if ($post->has('group')) {
+            if (!empty($post->get('group'))) {
                 $group = $this->em->getRepository(UserNominationGroup::class)->find($post->get('group'));
                 if (!$group || $group->getAward() !== $award) {
                     return $this->json(['error' => 'Invalid nomination group. Refresh the page and try again.']);
