@@ -255,7 +255,8 @@
             {% if votingOpen %}
               <div class="buttons" style="margin-top: 10px;">
                 <a href="{{ path('voting', {'awardID': nextAward.id}) }}" class="navigation next" title="Next award">
-                  <button class="btn btn-default">{{ nextAward.name }} >></button>
+                  <img src='{{ asset('2024images/right-sign.png') }}'/>
+                  {{ nextAward.name }}
                 </a>
               </div>
             {% endif %}
