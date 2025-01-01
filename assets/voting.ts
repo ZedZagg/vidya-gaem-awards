@@ -230,6 +230,8 @@ jQuery(function () {
         return;
     }
 
+    // used with character name from 2023 show
+    /*
     updateCharacterNameDisplay();
 
     $('#character-name-input')
@@ -249,6 +251,7 @@ jQuery(function () {
 
       $.post('/rpg/name', { name });
     });
+    */
 
     canPlayAudio = new Audio().canPlayType('audio/ogg') !== '';
 

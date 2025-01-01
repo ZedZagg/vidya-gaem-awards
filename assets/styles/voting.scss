@@ -1331,7 +1331,6 @@ body {
 
 .voteDropArea {
   padding: 5px;
-  padding-top: 50px;
   min-height: 185px;
   //border: 2px dashed #c2c5b5;
   transition: 0.2s all;
@@ -1434,8 +1433,9 @@ body {
   justify-content: center;
   position: relative;
   align-items: center;
-  font-family: 'NES Pixel', sans-serif;
-  font-size: 24px;
+  font-family: "Western Title", sans-serif;
+  font-size: 36px;
+  mix-blend-mode: overlay;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -1454,6 +1454,10 @@ body {
 
   div {
     display: inline;
+  }
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
