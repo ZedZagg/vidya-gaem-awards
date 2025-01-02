@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use App\Entity\Advertisement;
 use App\Entity\BaseUser;
-use App\Entity\CaptchaGame;
 use App\Entity\LootboxItem;
 use App\Entity\LootboxTier;
 use App\Entity\User;
@@ -257,12 +256,6 @@ class VotingController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        $captchaGames = $em->createQueryBuilder()
-            ->select('cg')
-            ->from(CaptchaGame::class, 'cg')
-            ->getQuery()
-            ->getResult();
-
         return $this->render('voting.html.twig', [
             'title' => 'Voting',
             'awards' => $awards,
@@ -285,11 +278,6 @@ class VotingController extends AbstractController
             'knownItems' => $knownItems,
             'rewardCSS' => $customCss,
             'showFantasyPromo' => !$predictionService->arePredictionsLocked(),
-            'captchaSettings' => [
-                'games' => $captchaGames,
-                'rows' => CaptchaGame::ROWS,
-                'columns' => CaptchaGame::COLUMNS,
-            ],
         ]);
     }
 

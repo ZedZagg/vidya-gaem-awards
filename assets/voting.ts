@@ -22,8 +22,6 @@ let showRewardsOnSubmit: boolean = false;
 let music: HTMLAudioElement;
 let canPlayAudio: boolean;
 let usingWinamp: boolean = false;
-let captchaPendingCallback: (() => void | undefined);
-let captchaShownThisLoad: boolean = false;
 let inventory;
 
 for (const item of knownItems) {
@@ -523,10 +521,6 @@ jQuery(function () {
         }
         alert('Your drops have been restored.');
     });
-
-    $('#viewBonusCaptcha').on('click', () => {
-      window.captchaReact.show(true);
-    })
 
     var lootboxSound = new Audio("/ogg/open-box.ogg");
 
@@ -1139,21 +1133,6 @@ jQuery(function () {
           }
         }, 'json');
 
-        if (showCaptcha && !captchaShownThisLoad) {
-          window.captchaReact.show();
-          captchaShownThisLoad = true;
-
-          captchaPendingCallback = () => {
-            openLootboxRewards(false);
-          };
-        } else {
-          openLootboxRewards(false);
-        }
-    });
-
-    renderCaptcha({
-      ...captchaSettings,
-      onCompletion: onCaptchaCompletion,
-      userSettings: captchaUserSettings,
+        openLootboxRewards(false);
     });
 });

@@ -35,7 +35,6 @@
       var lastVotes = {{ votes | json_encode | raw }};
       var postURL = "{{ path('votingSubmission', {'awardID': award.id}) }}";
       var votingStyle = "{{ votingStyle }}";
-      const captchaSettings = {{ captchaSettings | json_encode | raw }};
     </script>
   {% endif %}
 

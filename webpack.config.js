@@ -25,7 +25,6 @@ Encore
      */
     .addEntry('voting', './assets/voting.ts')
     .addEntry('photographs', './assets/photographs.tsx')
-    .addEntry('captchas', './assets/captchas.tsx')
     //.addEntry('page2', './assets/page2.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
