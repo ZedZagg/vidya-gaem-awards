@@ -23,6 +23,15 @@ body {
   }
 }
 
+.mobile-detected {
+  @media (orientation: landscape) {
+    visibility: hidden;
+  }
+  @media (orientation: portrait) {
+    visibility: visible;
+  }
+}
+
 header {
   display: flex;
   justify-content: center;
@@ -309,6 +318,7 @@ header {
   text-align: left;
   padding: 40px 70px;
 
+
   .your-votes {
     font-family: "Handwritten", serif;
     color: rgba(180, 80, 22, 0.8);
@@ -329,7 +339,11 @@ header {
     list-style: none;
     padding-left: 10px;
     font-size: 22px;
-    line-height: 1.1;
+    line-height: 1;
+
+    li {
+      padding-bottom: 8px;
+    }
 
     //position: relative;
     //display: grid;
