@@ -262,9 +262,11 @@ class CaptchaManager extends React.Component<CaptchaManagerProps, CaptchaManager
                   </div>
 
                   <div className="form-group row">
-                    <label className="col-sm-3 col-form-label" htmlFor="info-title">Title</label>
+                    <label className="col-sm-3 col-form-label" htmlFor="info-title">
+                      Title <span className="required" title="Required">*</span>
+                    </label>
                     <div className="col-sm-9">
-                      <input className="form-control" type="text" id="info-title"
+                    <input className="form-control" type="text" id="info-title"
                              placeholder="Half-Life 2" required
                              name="dialogTitle" maxLength={50} value={this.state.dialogTitle}
                              onChange={this.handleInputChange}/>
@@ -272,7 +274,9 @@ class CaptchaManager extends React.Component<CaptchaManagerProps, CaptchaManager
                   </div>
 
                   <div className="form-group row">
-                    <label className="col-sm-3 col-form-label" htmlFor="info-first">Row</label>
+                    <label className="col-sm-3 col-form-label" htmlFor="info-first">
+                      Row <span className="required" title="Required">*</span>
+                    </label>
                     <div className="col-sm-9">
                       <select className="form-select" id="info-first"
                               required
@@ -288,7 +292,9 @@ class CaptchaManager extends React.Component<CaptchaManagerProps, CaptchaManager
                   </div>
 
                   <div className="form-group row">
-                    <label className="col-sm-3 col-form-label" htmlFor="info-second">Column</label>
+                    <label className="col-sm-3 col-form-label" htmlFor="info-second">
+                      Column <span className="required" title="Required">*</span>
+                    </label>
                     <div className="col-sm-9">
                       <select className="form-select" id="info-second"
                               required

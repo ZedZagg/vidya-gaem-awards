@@ -364,7 +364,9 @@
             </div>
 
             <div class="form-group row">
-              <label class="col-lg-2 col-sm-3 col-form-label" for="info-id">ID</label>
+              <label class="col-lg-2 col-sm-3 col-form-label" for="info-id">
+                ID <span class="required" title="Required">*</span>
+              </label>
               <div class="col-lg-10 col-sm-9">
                 <input class="form-control" type="text" id="info-id" placeholder="best-writing" required
                        name="id" pattern="[0-9a-zA-Z-]+">
@@ -372,14 +374,18 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-lg-2 col-sm-3 col-form-label" for="info-name">Name</label>
+              <label class="col-lg-2 col-sm-3 col-form-label" for="info-name">
+                Name <span class="required" title="Required">*</span>
+              </label>
               <div class="col-lg-10 col-sm-9">
                 <input class="form-control" type="text" id="info-name" placeholder="Discworld Award" required
                        name="name">
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-lg-2 col-sm-3 col-form-label" for="info-subtitle">Subtitle</label>
+              <label class="col-lg-2 col-sm-3 col-form-label" for="info-subtitle">
+                Subtitle <span class="required" title="Required">*</span>
+              </label>
               <div class="col-lg-10 col-sm-9">
                 <input class="form-control" type="text" id="info-subtitle" placeholder="for best writing / story"
                        name="subtitle" required>
@@ -412,7 +418,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-lg-2 col-sm-3 col-form-label" for="info-order">Position</label>
+              <label class="col-lg-2 col-sm-3 col-form-label" for="info-order">
+                Position <span class="required" title="Required">*</span>
+              </label>
               <div class="col-lg-10 col-sm-9">
                 <input class="form-control" type="number" min="1" max="10000" id="info-order" name="order" required>
                 <small class="form-text text-muted">Awards with a lower position will be sorted first. When adding awards for the first time, leave a gap of 10 to make it easier to change the order later.</small>

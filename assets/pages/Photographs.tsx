@@ -212,7 +212,9 @@ class Photographs extends React.Component<PhotographsProps, PhotographsState> {
                   </div>
 
                   <div className="form-group row">
-                    <label className="col-sm-3 col-form-label" htmlFor="info-name">Name</label>
+                    <label className="col-sm-3 col-form-label" htmlFor="info-name">
+                      Name <span className="required" title="Required">*</span>
+                    </label>
                     <div className="col-sm-9">
                       <input className="form-control" type="text" id="info-name"
                              placeholder="The Power of Shitposting" required

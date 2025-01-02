@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\AwardSuggestion;
 use App\Entity\User;
+use App\Entity\UserNominationGroup;
 use App\Service\AuditService;
 use App\Service\ConfigService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -301,7 +302,29 @@ class AwardController extends AbstractController
                 return $this->json(['error' => 'You\'ve already nominated that.']);
             }
 
+            // Find existing nomination group
+            $result = $em->createQueryBuilder()
+                ->select('ung')
+                ->from(UserNominationGroup::class, 'ung')
+                ->where('ung.name = :name')
+                ->andWhere('IDENTITY(ung.award) = :award')
+                ->setParameter('name', $nomination)
+                ->setParameter('award', $award->getId())
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if (!$result) {
+                $nominationGroup = new UserNominationGroup();
+                $nominationGroup->setAward($award);
+                $nominationGroup->setName($nomination);
+
+                $em->persist($nominationGroup);
+            } else {
+                $nominationGroup = $result;
+            }
+
             $userNomination = new UserNomination($award, $user, $nomination);
+            $userNomination->setNominationGroup($nominationGroup);
             $em->persist($userNomination);
 
             $auditService->add(

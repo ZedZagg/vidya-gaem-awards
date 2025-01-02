@@ -15,8 +15,10 @@ class FileService
         'image/png' => 'png',
         'image/jpeg' => 'jpg',
         'image/gif' => 'gif',
+        'image/webp' => 'webp',
         'audio/ogg' => 'ogg',
         'video/ogg' => 'ogg',
+        'video/webm' => 'webm',
         'application/ogg' => 'ogg',
         'application/x-zip-compressed' => 'zip',
     ];

@@ -80,6 +80,7 @@ class ImportGamesCommand extends Command
             $output->writeln('<fg=cyan>' . $name . '</>', OutputInterface::VERBOSITY_VERBOSE);
 
             $release = new GameRelease($name);
+            $release->setSource('import');
             $platforms = array_keys(array_filter($platforms));
             foreach ($platforms as $platform) {
                 if (method_exists($release, 'set' . $platform)) {

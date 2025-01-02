@@ -104,7 +104,7 @@ class LootboxService {
         $this->em->flush();
     }
 
-    public function getRandomItem(): LootboxItem
+    public function getRandomItem(): ?LootboxItem
     {
         $maxDropValue = $this->itemRepo->createQueryBuilder('i')
             ->select('MAX(i.cachedDropValueEnd)')
@@ -119,7 +119,7 @@ class LootboxService {
             ->where(':value BETWEEN i.cachedDropValueStart AND i.cachedDropValueEnd')
             ->setParameter('value', $randomNumber / 100000)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 
     public function getTotalRelativeDropChance(): float

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use Exception;
 use Knojector\SteamAuthenticationBundle\Event\PayloadValidEvent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -10,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use xPaw\Steam\SteamOpenID;
 
 class AuthController extends AbstractController
@@ -29,23 +29,26 @@ class AuthController extends AbstractController
         return new RedirectResponse($steam->GetAuthUrl());
     }
 
-    public function loginReturnAction(RouterInterface $router, EventDispatcherInterface $eventDispatcher, SessionInterface $session, UrlGeneratorInterface $urlGenerator): RedirectResponse
+    public function loginReturnAction(RouterInterface $router, EventDispatcherInterface $eventDispatcher, SessionInterface $session, UrlGeneratorInterface $urlGenerator): Response
     {
         $steam = new SteamOpenID($router->generate('loginReturn', [], UrlGeneratorInterface::ABSOLUTE_URL));
 
         if ($steam->ShouldValidate()) {
-            $communityId = $steam->Validate();
+            try {
+                $communityId = $steam->Validate();
+            } catch (Exception $e) {
+                return $this->render('loginFailure.html.twig', [
+                    'exception' => $e,
+                ], new Response('', 400));
+            }
         } else {
-            return $this->redirectToRoute('loginFailure');
+            return $this->render('loginFailure.html.twig', [
+                'exception' => null,
+            ], new Response('', 400));
         }
 
         $eventDispatcher->dispatch(new PayloadValidEvent($communityId), PayloadValidEvent::NAME);
 
         return new RedirectResponse($session->get('_security.main.target_path') ?: $urlGenerator->generate('home'));
-    }
-
-    public function loginFailureAction(): Response
-    {
-        return $this->render('loginFailure.html.twig');
     }
 }

@@ -46,6 +46,9 @@ class Nominee implements JsonSerializable
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Award', inversedBy: 'nominees')]
     private Award $award;
 
+    #[ORM\OneToOne(mappedBy: 'Nominee', cascade: ['persist', 'remove'])]
+    private ?UserNominationGroup $userNominationGroup = null;
+
     public function __construct()
     {
         $this->fantasyPredictions = new ArrayCollection();
@@ -140,6 +143,28 @@ class Nominee implements JsonSerializable
             'flavorText' => $this->getFlavorText(),
             'image' => $this->getImage()
         ];
+    }
+
+    public function getUserNominationGroup(): ?UserNominationGroup
+    {
+        return $this->userNominationGroup;
+    }
+
+    public function setUserNominationGroup(?UserNominationGroup $userNominationGroup): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($userNominationGroup === null && $this->userNominationGroup !== null) {
+            $this->userNominationGroup->setNominee(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($userNominationGroup !== null && $userNominationGroup->getNominee() !== $this) {
+            $userNominationGroup->setNominee($this);
+        }
+
+        $this->userNominationGroup = $userNominationGroup;
+
+        return $this;
     }
 }
 

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'game_releases')]
@@ -33,14 +34,20 @@ class GameRelease
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     private int $id;
 
-    #[ORM\Column(name: 'name', type: 'string', length: 100)]
+    #[ORM\Column(name: 'name', type: 'string')]
     private string $name;
+
+    #[ORM\Column(name: 'url', type: 'string', nullable: true)]
+    private ?string $url = null;
+
+    #[ORM\Column(name: 'source', type: 'string', length: 20)]
+    private string $source;
 
     #[ORM\Column(name: 'notable', type: 'boolean', nullable: false)]
     private bool $notable = false;
 
-    #[ORM\Column(name: 'manually_added', type: 'boolean', nullable: false)]
-    private bool $manuallyAdded = false;
+    #[ORM\Column(name: 'deleted_at', type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(name: 'pc', type: 'boolean', nullable: false)]
     private bool $pc = false;
@@ -125,18 +132,6 @@ class GameRelease
     public function isNotable(): bool
     {
         return $this->notable;
-    }
-
-    public function setManuallyAdded(bool $manuallyAdded): GameRelease
-    {
-        $this->manuallyAdded = $manuallyAdded;
-
-        return $this;
-    }
-
-    public function isManuallyAdded(): bool
-    {
-        return $this->manuallyAdded;
     }
 
     public function setPc(bool $pc): GameRelease
@@ -360,11 +355,6 @@ class GameRelease
         return $others;
     }
 
-    public function getURL(): string
-    {
-        return 'https://en.wikipedia.org/wiki/' . urlencode(str_replace(' ', '_', $this->getName()));
-    }
-
     public function getPlatforms(): array
     {
         $platforms = [];
@@ -375,5 +365,42 @@ class GameRelease
         }
         return $platforms;
     }
-}
 
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): GameRelease
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    public function setSource(string $source): GameRelease
+    {
+        $this->source = $source;
+        return $this;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->deletedAt !== null;
+    }
+
+    public function getDeletedAt(): ?DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?DateTimeImmutable $deletedAt): GameRelease
+    {
+        $this->deletedAt = $deletedAt;
+        return $this;
+    }
+}

@@ -53,6 +53,11 @@ class AuditLogController extends AbstractController
             'captcha-game-edit' => 'Edited a game in the captcha',
             'captcha-game-delete' => 'Removed a game from the captcha',
             'captcha-game-bulk-upload' => 'Bulk uploaded images for the captcha',
+            'nomination-group-ignored' => 'Ignored a user nomination for an award',
+            'nomination-group-unignored' => 'Unignored a user nomination for an award',
+            'nomination-group-merged' => 'Merged two user nominations',
+            'nomination-group-demerged' => 'Demerged two user nominations',
+            'nomination-group-updated' => 'Updated a user nomination group',
         ];
 
         $result = $em->createQueryBuilder()

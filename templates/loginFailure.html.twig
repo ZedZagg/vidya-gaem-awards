@@ -3,5 +3,15 @@
 {% block title %}Login failure{% endblock %}
 
 {% block content %}
-  <h1 class="page-header board-header mb-4">Failed to log in</h1>
+  <h1 class="page-header board-header mb-4">/400/ - Login Failure</h1>
+
+  {% if exception %}
+    <div class="text-center mb-4">
+      The following message was provided: <code>{{ exception.message }}</code>
+    </div>
+  {% endif %}
+
+  <div class="text-center">
+    Usually this means you've reused a link or took too long to log in. Try logging in again.
+  </div>
 {% endblock %}

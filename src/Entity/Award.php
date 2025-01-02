@@ -93,6 +93,12 @@ class Award implements JsonSerializable
     #[ORM\ManyToOne(targetEntity: 'App\Entity\File')]
     private ?File $winnerImage;
 
+    /**
+     * @var Collection<int, UserNominationGroup>
+     */
+    #[ORM\OneToMany(mappedBy: 'award', targetEntity: UserNominationGroup::class, orphanRemoval: true)]
+    private Collection $userNominationGroups;
+
     public function __construct()
     {
         $this->feedback = new ArrayCollection();
@@ -102,6 +108,7 @@ class Award implements JsonSerializable
         $this->resultCache = new ArrayCollection();
         $this->suggestions = new ArrayCollection();
         $this->fantasyPredictions = new ArrayCollection();
+        $this->userNominationGroups = new ArrayCollection();
     }
 
     /**
@@ -463,6 +470,36 @@ class Award implements JsonSerializable
     public function setWinnerImage(?File $winnerImage): self
     {
         $this->winnerImage = $winnerImage;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserNominationGroup>
+     */
+    public function getUserNominationGroups(): Collection
+    {
+        return $this->userNominationGroups;
+    }
+
+    public function addUserNominationGroup(UserNominationGroup $userNominationGroup): static
+    {
+        if (!$this->userNominationGroups->contains($userNominationGroup)) {
+            $this->userNominationGroups->add($userNominationGroup);
+            $userNominationGroup->setAward($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserNominationGroup(UserNominationGroup $userNominationGroup): static
+    {
+        if ($this->userNominationGroups->removeElement($userNominationGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($userNominationGroup->getAward() === $this) {
+                $userNominationGroup->setAward(null);
+            }
+        }
 
         return $this;
     }
