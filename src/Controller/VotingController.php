@@ -238,7 +238,6 @@ class VotingController extends AbstractController
 
         $lootboxSettings = [
             'cost' => $configService->get('lootbox-cost'),
-            'captchaLimit' => $configService->get('captcha-limit'),
         ];
 
         $lootboxTiers = $em->createQueryBuilder()

@@ -4,9 +4,6 @@ require('jquery-ui/ui/widgets/draggable');
 require('jquery-ui/ui/widgets/droppable');
 require('bootstrap');
 import Sortable from "sortablejs";
-import './styles/captchas.scss';
-import Captcha, {CaptchaProps, CaptchaUserSettings, renderCaptcha} from "./components/Captcha";
-import captcha from "./components/Captcha";
 
 declare var votingEnabled: boolean;
 declare var lastVotes: any;
@@ -17,7 +14,6 @@ declare const lootboxSettings: any;
 declare const lootboxTiers: any;
 declare const rewards: any;
 declare const knownItems: any;
-declare const captchaSettings: CaptchaProps;
 
 let previousLockExists = lastVotes.length > 1;
 let dragCounter: any;
@@ -73,49 +69,6 @@ onDumbShit(function () {
 
     $('#cheat-code').show();
 });
-
-const captchaUserSettings: CaptchaUserSettings = {
-  showTitles: localStorage.getItem('captcha-showTitles') === 'true',
-  maxThreeFailures: localStorage.getItem('captcha-maxThreeFailures') === 'true',
-  neverShowAgain: localStorage.getItem('captcha-neverShowAgain') === 'true',
-  allowPartialPass: localStorage.getItem('captcha-allowPartialPass') === 'true',
-  completions: localStorage.getItem('captcha-completions') ? JSON.parse(localStorage.getItem('captcha-completions')) : 0,
-};
-
-let showCaptcha = votingEnabled && !previousLockExists && !captchaUserSettings.neverShowAgain && lootboxSettings.captchaLimit > captchaUserSettings.completions;
-
-function updateCharacterNameDisplay() {
-  let characterName = localStorage.getItem('characterName');
-  if (!characterName) {
-    characterName = 'Anonymous';
-  }
-  $('#containerInventory .title-text').text(characterName + "'s Inventory");
-}
-
-function handleCharacterNameChange(event: JQuery.ChangeEvent|JQuery.KeyUpEvent) {
-  const name = event.target.value.trim();
-  const submit = $('#character-form').find('[type=submit]');
-
-  let canSubmit = true;
-
-  if (name.toLowerCase() === 'changed later') {
-    $(event.target).addClass('is-invalid');
-    canSubmit = false;
-  } else if (name.toLowerCase() === 'wisely') {
-    $(event.target).addClass('is-valid');
-  } else {
-    $(event.target).removeClass('is-invalid');
-    $(event.target).removeClass('is-valid');
-  }
-
-  if (canSubmit) {
-    submit.removeAttr('disabled');
-  } else {
-    submit.attr('disabled', 'disabled');
-  }
-
-  $('#character-name-count').text(name.length + '/20');
-}
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -220,7 +173,6 @@ function migrateInventory() {
 declare global {
     interface Window {
         cheat(code: string): void;
-        captchaReact: Captcha;
     }
 }
 
@@ -268,33 +220,6 @@ jQuery(function () {
     function updateInventory() {
         localStorage.setItem('inventory', JSON.stringify(inventory));
         $('#shekelCount').find('.item-name').text(inventory['shekels'] + ' gold');
-
-        let captchaScoresJson = localStorage.getItem('captcha-scores');
-        let captchaScores: number[];
-        if (captchaScoresJson) {
-          captchaScores = JSON.parse(captchaScoresJson);
-        } else {
-          captchaScores = [];
-        }
-
-        const total = captchaScores.reduce((carry, score) => {
-          let xp = 1;
-          if (score === 1) {
-            xp += 3;
-          } else if (score === 2) {
-            xp += 5;
-          } else if (score === 3) {
-            xp += 7;
-          }
-          return carry + xp;
-        }, 0);
-
-        const totalScore = captchaScores.reduce((a, b) => a + b, 0);
-        const average = captchaScores.length > 0 ? totalScore / captchaScores.length : 0;
-
-        $('#captchaCount').toggle(captchaScores.length > 0);
-        $('#captcha-xp').text(total);
-        $('#captcha-xp-score').text(average.toFixed(2));
 
         if (inventory['shekels'] >= lootboxCost) {
             $('#buy-lootbox').removeAttr('disabled');
@@ -364,34 +289,6 @@ jQuery(function () {
     updateInventory();
 
     $('#shekelCount').show();
-
-    function onCaptchaCompletion(score: number|null) {
-        if (captchaPendingCallback) {
-            captchaPendingCallback();
-            captchaPendingCallback = undefined;
-        }
-
-        if (score !== null) {
-            const completions = localStorage.getItem('captcha-completions');
-            if (completions) {
-              localStorage.setItem('captcha-completions', JSON.stringify(JSON.parse(completions) + 1));
-            } else {
-              localStorage.setItem('captcha-completions', JSON.stringify(1));
-            }
-
-            let scores: any = localStorage.getItem('captcha-scores');
-            if (scores) {
-                scores = JSON.parse(scores);
-            } else {
-                scores = [];
-            }
-
-            scores.push(score);
-            localStorage.setItem('captcha-scores', JSON.stringify(scores));
-
-            updateInventory();
-        }
-    }
 
     if (localStorage.getItem('activeCSS')) {
         $('html').addClass('reward-' + localStorage.getItem('activeCSS'));
