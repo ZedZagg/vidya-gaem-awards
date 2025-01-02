@@ -8,10 +8,7 @@
   background-color: #2C2B31;
   background-position: center;
 
-  -webkit-mask-image: url(/2023images/mask.png);
-  -webkit-mask-size: cover;
-
-  font-family: "ChronoType", sans-serif;
+  font-family: "Young Heart", sans-serif;
 }
 
 .flavorText {
@@ -73,7 +70,6 @@
   /*font-family: 'X-Files', sans-serif;*/
   text-align: center;
   font-weight: normal;
-  text-shadow: 1px 1px black;
   color: white;
   font-size: 22px;
   line-height: 1.1;
@@ -85,7 +81,6 @@
   margin-top: 0px;
   font-size: 14px;
   line-height: 1.1;
-  text-shadow: 1px 1px black;
   color: white;
 }
 
@@ -102,7 +97,8 @@
 .fakeElement {
   /* This line is magic CSS which keeps the voting box at a fixed aspect ratio, even when the width changes. */
   /* This works because the percentage for the padding-top is a percentage of width. */
-  padding-top: calc(300 / 542 * 100%);
+  padding-top: calc(300 / 548 * 100%);
+  box-shadow: inset 0 0 15px rgb(11, 9, 9);
 }
 
 
@@ -113,6 +109,7 @@
 
 #voteDropAreaBottom .fakeElement{
   /*background: url("/2019images/nom_corner_locked.png") no-repeat bottom left;*/
+  box-shadow: 0 0 8px rgb(11, 9, 9);
 }
 
 #voteDropAreaBottom .nomineeName, #voteDropAreaBottom .nomineeSubtitle{

@@ -34,6 +34,27 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Western Title';
+  src: url('/2024images/fonts/Cowboy Movie.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Young Heart';
+  src: url('/2024images/fonts/Young Heart.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Handwritten';
+  src: url('/2024images/fonts/TrashHand.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*
 @font-face {
   font-family: 'Olde Serif';
@@ -156,7 +177,9 @@
 /*}*/
 
 html {
-  background: #71431C url('/2023images/background5.png') repeat center;
+  background: #71431C url('/2024images/background.png') center;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 body {

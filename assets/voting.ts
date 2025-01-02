@@ -230,6 +230,8 @@ jQuery(function () {
         return;
     }
 
+    // used with character name from 2023 show
+    /*
     updateCharacterNameDisplay();
 
     $('#character-name-input')
@@ -249,6 +251,7 @@ jQuery(function () {
 
       $.post('/rpg/name', { name });
     });
+    */
 
     canPlayAudio = new Audio().canPlayType('audio/ogg') !== '';
 
@@ -966,7 +969,7 @@ jQuery(function () {
     function unlockVotes() {
         $(".voteBox").removeClass("locked");
         $(".aNominee").removeClass("locked");
-        $('#submitReminder').text('Don\'t forget to click on "Submit Votes" below to save your votes!');
+        $('#submitReminder').text('Don\'t forget to click on "Submit" below to save your votes!');
 
         bottomAreaContainer.removeClass("locked");
         bottomAreaContainer.find('.your-votes').text("Your Votes (unsaved)");

@@ -76,13 +76,13 @@ class VotingController extends AbstractController
             if (!$start) {
                 $voteText = 'Voting will open soon.';
             } else {
-                $voteText = 'Voting will open in ' . Config::getRelativeTimeString($start) . '.';
+                $voteText = 'Voting opens in ' . Config::getRelativeTimeString($start) . '.';
             }
         } elseif ($votingOpen) {
             if (!$end) {
                 $voteText = 'Voting is now open!';
             } else {
-                $voteText = 'You have ' . Config::getRelativeTimeString($end) . ' left to vote.';
+                $voteText = 'Voting closes in ' . Config::getRelativeTimeString($end);
             }
         } else {
             $voteText = 'Voting is now closed.';
