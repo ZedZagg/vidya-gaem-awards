@@ -98,3 +98,8 @@ services:
         arguments:
           $clientId: '%env(TWITCH_CLIENT_ID)%'
           $clientSecret: '%env(TWITCH_CLIENT_SECRET)%'
+
+    App\Service\CloudflareService:
+        arguments:
+          $apiKey: '%env(CLOUDFLARE_API_KEY)%'
+          $zoneId: '%env(CLOUDFLARE_ZONE_ID)%'

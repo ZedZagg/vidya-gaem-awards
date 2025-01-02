@@ -5,6 +5,7 @@ use App\Entity\Action;
 use App\Entity\Config;
 use App\Entity\TableHistory;
 use App\Service\AuditService;
+use App\Service\CloudflareService;
 use App\Service\ConfigService;
 use App\Service\CronJobService;
 use DateTime;
@@ -20,9 +21,16 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ConfigController extends AbstractController
 {
-    public function indexAction(ConfigService $configService, CronJobService $cron, RouterInterface $router): Response
+    public function __construct(
+        private ConfigService     $configService,
+        private CloudflareService $cloudflare,
+        private CronJobService    $cron, private readonly CloudflareService $cloudflareService,
+    ) {
+    }
+
+    public function indexAction(RouterInterface $router): Response
     {
-        $config = $configService->getConfig();
+        $config = $this->configService->getConfig();
 
         $navbarConfig = [];
         foreach ($config->getNavbarItems() as $routeName => $details) {
@@ -35,7 +43,7 @@ class ConfigController extends AbstractController
             if (new DateTime() < $config->getStreamTime() && $config->isPagePublic('results')) {
                 $ultraAlerts[] = 'The results page is public, but the stream date hasn\'t passed yet.';
             }
-            if (!$cron->isCronJobEnabled() && $config->isVotingOpen()) {
+            if (!$this->cron->isCronJobEnabled() && $config->isVotingOpen()) {
                 $ultraAlerts[] = 'Voting is open, but the results generator hasn\'t been activated.';
             }
             if (!$config->isPagePublic($config->getDefaultPage())) {
@@ -48,14 +56,15 @@ class ConfigController extends AbstractController
             'config' => $config,
             'navigationBarConfig' => implode("\n", $navbarConfig),
             'routes' => $this->getValidNavbarRoutes($router->getRouteCollection()),
-            'cronEnabled' => $cron->isCronJobEnabled(),
+            'cronEnabled' => $this->cron->isCronJobEnabled(),
+            'cloudflareAvailable' => $this->cloudflare->isServiceAvailable(),
             'ultraAlerts' => $ultraAlerts,
         ]);
     }
 
-    public function postAction(EntityManagerInterface $em, ConfigService $configService, Request $request, AuditService $auditService, RouterInterface $router, CronJobService $cron): RedirectResponse
+    public function postAction(EntityManagerInterface $em, Request $request, AuditService $auditService, RouterInterface $router): RedirectResponse
     {
-        $config = $configService->getConfig();
+        $config = $this->configService->getConfig();
 
         if ($config->isReadOnly()) {
             $this->addFlash('error', 'The site is currently in read-only mode. No changes can be made.'
@@ -76,7 +85,7 @@ class ConfigController extends AbstractController
             // It's extremely likely that the cron job will already be disabled prior to the site being put into
             // read-only mode. Nonetheless, we make absolutely sure that it is disabled anyway, because once read-only
             // mode is active, the controls for the cron job become unavailable.
-            $cron->disableCronJob();
+            $this->cron->disableCronJob();
 
             $auditService->add(
                 new Action('config-readonly-enabled')
@@ -220,17 +229,17 @@ class ConfigController extends AbstractController
         return $routes;
     }
 
-    public function cronAction(CronJobService $cron): Response
+    public function cronAction(): Response
     {
         return $this->render('cron.html.twig', [
-            'enabled' => $cron->isCronJobEnabled(),
-            'available' => $cron->isCronJobAvailable(),
+            'enabled' => $this->cron->isCronJobEnabled(),
+            'available' => $this->cron->isCronJobAvailable(),
         ]);
     }
 
-    public function cronPostAction(Request $request, CronJobService $cron, ConfigService $configService, AuditService $auditService): RedirectResponse
+    public function cronPostAction(Request $request, AuditService $auditService): RedirectResponse
     {
-        $config = $configService->getConfig();
+        $config = $this->configService->getConfig();
         $post = $request->request;
         $enable = $post->getBoolean('enable');
 
@@ -239,19 +248,19 @@ class ConfigController extends AbstractController
             return $this->redirectToRoute('cron');
         }
 
-        if (!$cron->isCronJobAvailable()) {
+        if (!$this->cron->isCronJobAvailable()) {
             $this->addFlash('error', 'Cron job management is disabled in the site backend. The state of the result generator cannot be changed.');
             return $this->redirectToRoute('cron');
         }
 
-        $currentlyEnabled = $cron->isCronJobEnabled();
+        $currentlyEnabled = $this->cron->isCronJobEnabled();
         if (!$currentlyEnabled && $enable) {
-            $cron->enableCronJob();
+            $this->cron->enableCronJob();
             $auditService->add(
                 new Action('cron-results-enabled')
             );
         } elseif ($currentlyEnabled && !$enable) {
-            $cron->disableCronJob();
+            $this->cron->disableCronJob();
             $auditService->add(
                 new Action('cron-results-disabled')
             );
@@ -269,5 +278,17 @@ class ConfigController extends AbstractController
             );
         }
         return $this->redirectToRoute('cron');
+    }
+
+    public function purgeCloudflareCacheAction(): RedirectResponse
+    {
+        if (!$this->cloudflareService->isServiceAvailable()) {
+            $this->addFlash('error', 'Cloudflare service is not available.');
+            return $this->redirectToRoute('config');
+        }
+
+        $this->cloudflare->purgeCache();
+        $this->addFlash('success', 'Cloudflare cache has been purged.');
+        return $this->redirectToRoute('config');
     }
 }
