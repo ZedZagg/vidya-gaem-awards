@@ -173,6 +173,7 @@ class NomineeController extends AbstractController
         }
 
         if ($action === 'delete') {
+            $nominee->setUserNominationGroup(null);
             $this->em->remove($nominee);
             $this->auditService->add(
                 new Action('nominee-delete', $award->getId(), $nominee->getShortName())

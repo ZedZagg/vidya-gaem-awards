@@ -653,7 +653,7 @@
                   currentlySubmitting = false;
 
                   if (data.success) {
-                      $("#nominee-" + nomineeID).slideUp(500, function () {
+                      $(".nominee[data-nominee=" + nomineeID + "]").slideUp(500, function () {
                           $(this).remove();
                           $("#official-count").text($("#official-count").text() - 1);
                       });
