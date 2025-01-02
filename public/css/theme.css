@@ -48,6 +48,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Handwritten';
+  src: url('/2024images/fonts/TrashHand.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /*
 @font-face {
   font-family: 'Olde Serif';
