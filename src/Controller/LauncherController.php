@@ -16,7 +16,11 @@ class LauncherController extends AbstractController
     {
         $timezone = new DateTimeZone($configService->getConfig()->getTimezone());
 
-        $streamDate = new DateTimeImmutable($configService->getConfig()->getStreamTime()->format('Y-m-d H:i:s'), $timezone);
+        if ($configService->getConfig()->getStreamTime()) {
+            $streamDate = new DateTimeImmutable($configService->getConfig()->getStreamTime()->format('Y-m-d H:i:s'), $timezone);
+        } else {
+            $streamDate = null;
+        }
 
         $timezones = [
             'Honolulu' => 'Pacific/Honolulu',
