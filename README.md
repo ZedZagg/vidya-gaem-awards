@@ -7,11 +7,10 @@ under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Requirements
 
- * PHP 8.1
+ * PHP 8.3
  * A MySQL or MariaDB database. (An SQLite database is sufficient for local development.) 
  * [Composer](https://getcomposer.org/)
- * NodeJS
- * Yarn package manager
+ * Node.js + NPM
 
 ## Getting started
 
@@ -22,7 +21,7 @@ under the [MIT License](https://opensource.org/licenses/MIT).
     * Leave the value of `DYNAMIC_TEMPLATES` as `false` until the database has been initalized.
  3. Run `composer install`.
  4. Run `php bin/console app:init-db` to set up the database.
- 5. Run `yarn build` (for production) or `yarn watch` (for development).
+ 5. Run `npm run build` (for production) or `npm run watch` (for development).
 
 ## Local development
 
