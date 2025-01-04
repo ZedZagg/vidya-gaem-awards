@@ -23,6 +23,6 @@ class AnonymousUser extends BaseUser
 
     public function getUserIdentifier(): string
     {
-        return $this->getRandomID();
+        return $this->getRandomID() ?: 'Anonymous';
     }
 }
