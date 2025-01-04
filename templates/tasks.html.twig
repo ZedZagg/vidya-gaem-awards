@@ -229,12 +229,12 @@
                 $("#info-image").val("");
                 $("#info-flavor").val(nominee.flavorText);
 
-                if (fullAccess) {
-                    $("#info-name").removeAttr("disabled");
-                    $("#info-subtitle").removeAttr("disabled");
-                    $("#info-image-container").show();
-                    $("#info-flavor").removeAttr("disabled");
-                } else {
+                $("#info-name").removeAttr("disabled");
+                $("#info-subtitle").removeAttr("disabled");
+                $("#info-image-container").show();
+                $("#info-flavor").removeAttr("disabled");
+
+                if (!fullAccess) {
                     $("#info-name").attr("disabled", "disabled");
                     if (nominee.subtitle !== "") {
                         $("#info-subtitle").attr("disabled", "disabled");
