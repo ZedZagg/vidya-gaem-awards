@@ -47,8 +47,8 @@ services:
 
     App\EventListener\UserListener:
         tags:
-        - { name: kernel.event_listener, event: kernel.request }
-        - { name: kernel.event_listener, event: kernel.response }
+            - { name: kernel.event_listener, event: kernel.request }
+            - { name: kernel.event_listener, event: kernel.response }
         arguments: ['%env(APP_SECRET)%']
 
     app.config:
@@ -61,11 +61,11 @@ services:
     twig.extension.ansi:
         class: SensioLabs\AnsiConverter\Bridge\Twig\AnsiExtension
         tags:
-        - { name: twig.extension }
+            - { name: twig.extension }
 
     App\Twig\CarbonExtension:
         tags:
-        - { name: twig.extension }
+            - { name: twig.extension }
 
     App\Twig\ArrayExtension:
         tags:
@@ -96,14 +96,14 @@ services:
 
     App\Service\IgdbService:
         arguments:
-          $clientId: '%env(TWITCH_CLIENT_ID)%'
-          $clientSecret: '%env(TWITCH_CLIENT_SECRET)%'
+            $clientId: '%env(TWITCH_CLIENT_ID)%'
+            $clientSecret: '%env(TWITCH_CLIENT_SECRET)%'
 
     App\Service\CloudflareService:
         arguments:
-          $apiKey: '%env(CLOUDFLARE_API_KEY)%'
-          $zoneId: '%env(CLOUDFLARE_ZONE_ID)%'
+            $apiKey: '%env(CLOUDFLARE_API_KEY)%'
+            $zoneId: '%env(CLOUDFLARE_ZONE_ID)%'
 
     App\Service\SteamService:
         arguments:
-          $apiKey: '%env(STEAM_API_KEY)%'
+            $apiKey: '%env(STEAM_API_KEY)%'

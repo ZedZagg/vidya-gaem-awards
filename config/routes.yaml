@@ -10,9 +10,9 @@ login:
     path:       /login
     controller: App\Controller\AuthController::loginAction
 
+# Handled by SteamAuthenticator
 loginReturn:
     path:       /login/return
-    controller: App\Controller\AuthController::loginReturnAction
 
 logout:
     path:       /logout

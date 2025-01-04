@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\Access;
+use App\Entity\BaseUser;
 use App\Entity\User;
 use App\Service\ConfigService;
 use DateTime;
@@ -26,10 +27,10 @@ class UserListener
     public function __construct(string $secret, TokenStorageInterface $tokenStorage, RequestStack $requestStack, EntityManagerInterface $em, ConfigService $configService)
     {
         $this->secret = $secret;
-        $this->tokenStorage = $tokenStorage;
         $this->requestStack = $requestStack;
         $this->em = $em;
         $this->configService = $configService;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -41,27 +42,6 @@ class UserListener
         // These requests can be ignored.
         if (!$this->tokenStorage->getToken()) {
             return;
-        }
-
-        // Generate a random ID to keep in the cookie if one doesn't already exist.
-        // We use this cookie as part of the voting identification process.
-        $randomIDCookie = $request->cookies->get('access');
-        $randomIDSession = $session->get('access');
-
-        if ($randomIDCookie && $randomIDSession) {
-            $randomID = $randomIDCookie;
-        } elseif ($randomIDCookie && !$randomIDSession) {
-            $session->set('access', $randomIDCookie);
-            $randomID = $randomIDCookie;
-        } else {
-            // Who knows where this came from... it's probably not very secure.
-            // Good thing it's not required for anything that's actually important.
-            $factory = new Factory;
-            $generator = $factory->getLowStrengthGenerator();
-            $randomID = hash('sha256', $generator->generate(64));
-            $randomID .= ':' . hash_hmac('md5', $randomID, $this->secret);
-
-            $session->set('access', $randomID);
         }
 
         // If the user has a votingCode cookie set, use that, otherwise, use the votingCode session.
@@ -76,12 +56,11 @@ class UserListener
             $votingCode = $votingCodeSession;
         }
 
-        /** @var User $user */
+        /** @var BaseUser $user */
         $user = $this->tokenStorage->getToken()->getUser();
         $user
             ->setIP(self::getIpAddress($request))
-            ->setVotingCode($votingCode)
-            ->setRandomID($randomID);
+            ->setVotingCode($votingCode);
     }
 
     private static function getIpAddress(Request $request)

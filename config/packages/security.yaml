@@ -29,6 +29,15 @@ security:
             entry_point: App\Security\EntryPoint\SteamEntryPoint
             access_denied_handler: App\Security\EntryPoint\AccessDeniedHandler
 
+            # See App\Security\AnonymousAuthBundle for reasoning
+            anonymous_handler: true
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 2419200 # 4 weeks in seconds
+                always_remember_me: true
+                signature_properties: ['id']
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -37,7 +46,7 @@ security:
                 target: /
 
             custom_authenticators:
-                - App\Security\AnonymousAuthenticator
+                - App\Security\SteamAuthenticator
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
