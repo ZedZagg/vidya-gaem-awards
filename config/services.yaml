@@ -103,3 +103,7 @@ services:
         arguments:
           $apiKey: '%env(CLOUDFLARE_API_KEY)%'
           $zoneId: '%env(CLOUDFLARE_ZONE_ID)%'
+
+    App\Service\SteamService:
+        arguments:
+          $apiKey: '%env(STEAM_API_KEY)%'

@@ -6,9 +6,9 @@ use App\Entity\Config;
 use App\Entity\Permission;
 use App\Entity\Template;
 use App\Entity\User;
+use App\Service\SteamService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use SteamCondenser\Community\SteamId;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +20,7 @@ class InitialiseDatabaseCommand extends Command
     public function __construct(
         private readonly string $projectDir,
         private readonly EntityManagerInterface $em,
+        private readonly SteamService $steam,
     ) {
         parent::__construct();
     }
@@ -103,18 +104,22 @@ class InitialiseDatabaseCommand extends Command
                 return false;
             }
 
-            return SteamId::create($answer);
+            $steamId = $this->steam->stringToSteamId($answer);
+            if (!$steamId) {
+                return false;
+            }
+
+            return $this->steam->getProfile($steamId);
         });
 
-        $steam = $helper->ask($input, $output, $question);
+        $profile = $helper->ask($input, $output, $question);
 
-        if ($steam) {
-            /** @var SteamId $steam */
+        if ($profile) {
             $user = new User();
             $user
-                ->setSteamId($steam->getSteamId64())
-                ->setName($steam->getNickname())
-                ->setAvatar($steam->getMediumAvatarUrl())
+                ->setSteamId($profile['steamId64'])
+                ->setName($profile['nickname'])
+                ->setAvatar($profile['avatar'])
                 ->setSpecial(true);
 
             /** @var Permission $permission */
@@ -123,7 +128,7 @@ class InitialiseDatabaseCommand extends Command
             $this->em->persist($user);
             $this->em->flush();
 
-            $output->writeln($steam->getNickname() . ' has been given level 5 access.');
+            $output->writeln($profile['nickname'] . ' has been given level 5 access.');
         }
 
         $output->writeln('Setup complete.');
