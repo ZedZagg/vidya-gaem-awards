@@ -168,7 +168,7 @@ class NomineeController extends AbstractController
         } else {
             $nominee = $award->getNominee($post->get('id'));
             if (!$nominee) {
-                $this->json(['error' => 'Invalid nominee specified.']);
+                return $this->json(['error' => 'Invalid nominee specified.']);
             }
         }
 
