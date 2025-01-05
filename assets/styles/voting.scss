@@ -316,7 +316,6 @@ header {
 
   .awards {
     font-family: "Handwritten", sans-serif;
-    text-shadow: 1px 1px 2px #CF282F;
     column-count: 2;
     list-style: none;
     padding-left: 10px;
@@ -340,7 +339,7 @@ header {
 
   .award {
     color: white;
-    text-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 6px rgba(180,80,0, 9.5);
+    text-shadow: 0 0 10px rgba(0,0,0,0.7), 0 0 6px rgba(180,80,0, 9.5);
     text-decoration: none;
 
     &.complete {
@@ -1513,8 +1512,9 @@ body {
   //font-size: 20px;
 
   a {
-    font-family: "ChronoType", sans-serif;
-    color: white;
+    font-family: "Handwritten", sans-serif;
+    color: rgba(180, 80, 22, 0.8);
+    mix-blend-mode: color-burn;
     &:hover {
       text-decoration: underline;
     }
