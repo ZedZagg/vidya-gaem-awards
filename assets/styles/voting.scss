@@ -160,11 +160,11 @@ header {
 }
 
 .poster-background {
-  background-size: cover;
+  background-size: 100% 100%;
   background-image: url("/2024images/paper2.jpg");
-  -webkit-mask-image: url(/2023images/mask.png);
+  -webkit-mask-image: url(/2024images/paper-edge-mask.png);
   -webkit-mask-size: 100% 100%;
-  mask-image: url(/2023images/mask.png);
+  mask-image: url(/2024images/paper-edge-mask.png);
   mask-size: 100% 100%;
   padding: 30px;
   padding-top: 60px;
