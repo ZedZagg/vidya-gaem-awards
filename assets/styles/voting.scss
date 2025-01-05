@@ -67,28 +67,8 @@ header {
 
   .right-container {
     max-width: 50%;
-    overflow: hidden;
-    filter: brightness(1);
     padding: 6px;
-
-    .inner-border {
-      border: 2px solid rgba(149, 149, 147, 0.75);
-      padding: 10px;
-      mix-blend-mode: color-dodge;
-    }
-
-    .inner-background {
-      background-image: url("/2024images/planks-seamless.png");
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0px;
-      z-index: -1;
-      left: 0px;
-      transform: rotate(1deg) scaleY(1.5);
-      filter: brightness(0.7) saturate(0.6);
-      box-shadow: inset 0 0 8px rgb(11, 9, 9);
-    }
+    position: relative;
 
     .title-text {
       font-family: "Western Title";
@@ -99,6 +79,8 @@ header {
       text-align: center;
       line-height: 1;
       top: 8px;
+      padding: 10px;
+      mix-blend-mode: color-dodge;
 
       .line-1 {
         //text-transform: uppercase;
@@ -155,7 +137,7 @@ header {
   }
 
   .plank-inner-border {
-    padding: 10px;
+    padding: 7px;
     height: 100%;
 
     &::after {
