@@ -99,22 +99,22 @@ header {
       text-align: center;
       line-height: 1;
       top: 8px;
-  
+
       .line-1 {
         //text-transform: uppercase;
       }
-  
+
       .line-2 {
         font-size: 24px;
         //color: #CF282F;
       }
-  
+
       // when we move to two lines of header text
       @media screen and (max-width: 1200px) {
         font-size: 50px;
       }
-  
-  
+
+
       @media screen and (max-width: 500px) {
         font-size: 40px;
         transform: none;
@@ -866,15 +866,6 @@ $card-width: 350px;
 #shekelCount .inventory-item {
   background-image: url(/2022images/orangebg-no-rivet.png);
 }
-
-#captchaCount .inventory-item {
-  background-image: url(/2023images/green-metal.jpg);
-
-  img {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-}
-
 
 #rewards .item-inner-wrapper {
   flex-direction: column;

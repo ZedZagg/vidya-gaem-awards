@@ -1,10 +1,8 @@
 <?php
 namespace App\Controller;
 
-use Exception;
-use Knojector\SteamAuthenticationBundle\Event\PayloadValidEvent;
+use App\Service\SteamService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,40 +13,22 @@ use xPaw\Steam\SteamOpenID;
 
 class AuthController extends AbstractController
 {
-    public function loginAction(RouterInterface $router, Request $request, SessionInterface $session): Response
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly SteamService $steam,
+    ) {
+    }
+
+    public function loginAction(Request $request, SessionInterface $session): Response
     {
-        $key = $_ENV['STEAM_API_KEY'] ?? false;
-        if (!$key) {
+        if (!$this->steam->isApiKeySet()) {
             return $this->render('siteConfigIssue.html.twig');
         }
 
         $session->set('_security.main.target_path', $request->query->get('redirect'));
 
-        $steam = new SteamOpenID($router->generate('loginReturn', [], UrlGeneratorInterface::ABSOLUTE_URL));
+        $steam = new SteamOpenID($this->router->generate('loginReturn', [], UrlGeneratorInterface::ABSOLUTE_URL));
 
         return new RedirectResponse($steam->GetAuthUrl());
-    }
-
-    public function loginReturnAction(RouterInterface $router, EventDispatcherInterface $eventDispatcher, SessionInterface $session, UrlGeneratorInterface $urlGenerator): Response
-    {
-        $steam = new SteamOpenID($router->generate('loginReturn', [], UrlGeneratorInterface::ABSOLUTE_URL));
-
-        if ($steam->ShouldValidate()) {
-            try {
-                $communityId = $steam->Validate();
-            } catch (Exception $e) {
-                return $this->render('loginFailure.html.twig', [
-                    'exception' => $e,
-                ], new Response('', 400));
-            }
-        } else {
-            return $this->render('loginFailure.html.twig', [
-                'exception' => null,
-            ], new Response('', 400));
-        }
-
-        $eventDispatcher->dispatch(new PayloadValidEvent($communityId), PayloadValidEvent::NAME);
-
-        return new RedirectResponse($session->get('_security.main.target_path') ?: $urlGenerator->generate('home'));
     }
 }

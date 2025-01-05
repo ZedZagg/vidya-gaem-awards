@@ -7,9 +7,8 @@ use App\Entity\TableHistory;
 use App\Entity\User;
 use App\Service\AuditService;
 use App\Service\ConfigService;
+use App\Service\SteamService;
 use Doctrine\ORM\EntityManagerInterface;
-use SteamCondenser\Community\SteamId;
-use SteamCondenser\Exceptions\SteamCondenserException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -166,42 +165,30 @@ class PeopleController extends AbstractController
         ]);
     }
 
-    public function searchAction(EntityManagerInterface $em, Request $request, ConfigService $configService, AuditService $auditService): JsonResponse
+    public function searchAction(EntityManagerInterface $em, Request $request, ConfigService $configService, AuditService $auditService, SteamService $steam): JsonResponse
     {
         $post = $request->request;
 
-        // Perform basic profile URL parsing by only keeping the characters after the last slash.
-        $id = trim($post->get('id'), '/ ');
-        if (str_contains($id, '/')) {
-            $id = substr($id, strrpos($id, '/') + 1);
+        $steamId = $steam->stringToSteamId($post->get('id'));
+        if (!$steamId) {
+            return $this->json(['error' => 'Invalid SteamID or URL provided.']);
         }
 
-        try {
-            $steam = SteamId::create($id);
-        } catch (SteamCondenserException) {
+        $profile = $steam->getProfile($steamId);
+        if (!$profile) {
             return $this->json(['error' => 'no matches']);
-        }
-
-        // Annoyingly, when you link a Steam account with Discord, the steam ID it gives back is incorrect.
-        // See https://github.com/discordapp/discord-api-docs/issues/271.
-        // Specifically, the 32nd bit (representing the instance of the account) is 0 when it should be 1.
-        // If we detect the issue, we flip the bit and refetch the user using the correct ID.
-        $binary = str_pad(decbin($steam->getSteamId64()), 64, '0', STR_PAD_LEFT);
-        if ($binary[31] === '0') {
-            $binary[31] = '1';
-            $steam = SteamId::create(bindec($binary));
         }
 
         $repo = $em->getRepository(User::class);
 
         /** @var User $user */
-        $user = $repo->findOneBy(['steamId' => $steam->getSteamId64()]);
+        $user = $repo->findOneBy(['steamId' => $profile['steamId64']]);
         if (!$user) {
             $user = new User();
             $user
-                ->setSteamId($steam->getSteamId64())
-                ->setName($steam->getNickname())
-                ->setAvatar($steam->getMediumAvatarUrl());
+                ->setSteamId($profile['steamId64'])
+                ->setName($profile['nickname'])
+                ->setAvatar($profile['avatar']);
         }
 
         if ($user->isSpecial()) {

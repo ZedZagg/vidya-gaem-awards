@@ -234,7 +234,7 @@
   <hr>
 
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 mb-4">
       <div class="card">
         <h5 class="card-header">Result generator</h5>
         <div class="card-body">
@@ -245,7 +245,26 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <h5 class="card-header">Purge Cloudflare cache</h5>
+        <div class="card-body">
+          {% if cloudflareAvailable %}
+            <p>
+              This will purge the Cloudflare cache for the site. This is usually only needed for developers, and does
+              not affect the local Symfony cache.
+            </p>
+            <form action="{{ path('configPurgeCloudflareCache') }}" method="post">
+              <button type="submit" class="btn btn-danger btn-sm"
+                      onclick="return confirm('Are you sure you want to purge the Cloudflare cache?')">Purge cache</button>
+            </form>
+          {% else %}
+            The cache cannot be purged as the Cloudflare service has not been configured.
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
       <div class="card {{ config.isReadOnly ? '' : 'border-danger' }}">
         <h5 class="card-header">Read-only mode</h5>
         <div class="card-body {{ config.isReadOnly ? '' : 'text-danger' }}">

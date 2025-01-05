@@ -231,18 +231,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.27.1/humanize-duration.min.js" integrity="sha512-0Bd+9yMPZnNzFL0DAx7t9faxR9Djf2p41RVNAUZIdvG6s9q05Vvl4Dwj+rgRqh2esOq01Lv74VGmLA1mo4Ic+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script type="text/javascript">
-      const kickoff = luxon.DateTime.fromISO("{{ streamDate | date('c') }}");
+      {% if streamDate %}
+        const kickoff = luxon.DateTime.fromISO("{{ streamDate | date('c') }}");
+        document.getElementById("local-time").innerHTML = kickoff.toLocaleString(luxon.DateTime.DATETIME_FULL);
 
-      document.getElementById("local-time").innerHTML = kickoff.toLocaleString(luxon.DateTime.DATETIME_FULL);
+        // This could probably be replaced by moment.js
+        function updateCountdown() {
+            const diff = kickoff.diffNow().valueOf();
 
-      // This could probably be replaced by moment.js
-      function updateCountdown() {
-          const diff = kickoff.diffNow().valueOf();
-
-          document.getElementById("countdown").innerHTML = humanizeDuration(diff, { units: ["d", "h", "m"], round: true });
-      }
-      updateCountdown();
-      setInterval(updateCountdown, 10000);
+            document.getElementById("countdown").innerHTML = humanizeDuration(diff, { units: ["d", "h", "m"], round: true });
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 10000);
+      {% endif %}
   </script>
 {% endblock %}
 
@@ -263,7 +264,7 @@
       <iframe width="100%" height="600" src="https://www.youtube.com/embed/FUEmL2syknw" frameborder="0" allowfullscreen=""></iframe>
     </div>
 
-    <div id="local-time" class="text"></div>
+    <div id="local-time" class="text">Coming soon</div>
     <div id="countdown" class="text"></div>
   </div>
 {% endblock %}

@@ -10,19 +10,12 @@ login:
     path:       /login
     controller: App\Controller\AuthController::loginAction
 
-#loginCheck:
-#    path:       /login/check
-
+# Handled by SteamAuthenticator
 loginReturn:
     path:       /login/return
-    controller: App\Controller\AuthController::loginReturnAction
 
 logout:
     path:       /logout
-
-steam_authentication_callback:
-    path:       /steam/login_check
-    controller: Knojector\SteamAuthenticationBundle\Controller\SteamController::callback
 
 #
 # FRONT PAGE
@@ -400,6 +393,11 @@ configPost:
     methods:    [POST]
     controller: App\Controller\ConfigController::postAction
 
+configPurgeCloudflareCache:
+    path:       /config/purge-cloudflare-cache
+    methods:    [POST]
+    controller: App\Controller\ConfigController::purgeCloudflareCacheAction
+
 cron:
     path:       /config/cron
     methods:    [GET]
@@ -502,36 +500,6 @@ advertRedirect:
     controller: App\Controller\AdvertManagerController::redirectAction
     requirements:
         advertToken: '^[0-9a-f]+$'
-
-captchaManager:
-    path:       /captchas
-    methods:    [GET]
-    controller: App\Controller\CaptchaController::indexAction
-
-captchaPost:
-    path:       /captchas
-    methods:    [POST]
-    controller: App\Controller\CaptchaController::postAction
-
-captchaStats:
-    path:       /captchas/stats
-    methods:    [GET]
-    controller: App\Controller\CaptchaController::statsAction
-
-captchaBulkImageUploader:
-    path:       /captchas/bulk-image-uploader
-    methods:    [GET]
-    controller: App\Controller\CaptchaController::bulkImageAction
-
-captchaBulkImageUploaderSubmit:
-    path:       /captchas/bulk-image-uploader
-    methods:    [POST]
-    controller: App\Controller\CaptchaController::bulkImageSubmitAction
-
-captchaResult:
-    path:       /captcha/result
-    methods:    [POST]
-    controller: App\Controller\CaptchaController::resultAction
 
 rpgName:
     path:       /rpg/name

@@ -141,11 +141,11 @@ class TasksController extends AbstractController
             $nominee->setName($post->get('name'));
         }
 
-        if ($fullAccess || $nominee->getSubtitle() === "") {
+        if (($fullAccess || !$nominee->getSubtitle()) && $post->get('subtitle')) {
             $nominee->setSubtitle($post->get('subtitle'));
         }
 
-        if ($fullAccess || $nominee->getFlavorText() === "") {
+        if (($fullAccess || !$nominee->getFlavorText() && $post->get('flavorText'))) {
             $nominee->setFlavorText($post->get('flavorText'));
         }
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca489fae301f793cbeb296c25007f08d",
+    "content-hash": "44ef4ff6570daf35f2de8426aa908eba",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -1540,52 +1540,6 @@
             "time": "2024-10-21T18:21:57+00:00"
         },
         {
-            "name": "ehesp/steam-login",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Ehesp/Steam-Login.git",
-                "reference": "f7dd893ef2089ec51cd962c68ecba869be2f7e09"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Ehesp/Steam-Login/zipball/f7dd893ef2089ec51cd962c68ecba869be2f7e09",
-                "reference": "f7dd893ef2089ec51cd962c68ecba869be2f7e09",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "suggest": {
-                "koraktor/steam-condenser": "Library for querying the Steam Community, Source and GoldSrc game servers as well as the Steam master servers."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Ehesp\\SteamLogin": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Elliot Hesp",
-                    "email": "elliot.hesp@gmail.com"
-                }
-            ],
-            "description": "A simple PHP Steam login and validation package",
-            "keywords": [
-                "steam"
-            ],
-            "support": {
-                "issues": "https://github.com/Ehesp/Steam-Login/issues",
-                "source": "https://github.com/Ehesp/Steam-Login/tree/master"
-            },
-            "time": "2018-04-06T07:13:23+00:00"
-        },
-        {
             "name": "guzzlehttp/psr7",
             "version": "2.7.0",
             "source": {
@@ -1809,115 +1763,6 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.1.0"
             },
             "time": "2024-11-18T16:19:46+00:00"
-        },
-        {
-            "name": "knojector/steam-authentication-bundle",
-            "version": "1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/knojector/SteamAuthenticationBundle.git",
-                "reference": "e05b5982e07a65cf7eafdc1c6c29669c588d74b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/knojector/SteamAuthenticationBundle/zipball/e05b5982e07a65cf7eafdc1c6c29669c588d74b7",
-                "reference": "e05b5982e07a65cf7eafdc1c6c29669c588d74b7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.2",
-                "symfony/config": "^5.3|^6.0|^7.0",
-                "symfony/dependency-injection": "^5.3|^6.0|^7.0",
-                "symfony/event-dispatcher": "^5.3|^6.0|^7.0",
-                "symfony/expression-language": "^5.3|^6.0|^7.0",
-                "symfony/framework-bundle": "^5.3|^6.0|^7.0",
-                "symfony/http-client": "^5.3|^6.0|^7.0",
-                "symfony/routing": "^5.3|^6.0|^7.0",
-                "symfony/security-bundle": "^5.3|^6.0|^7.0",
-                "symfony/validator": "^5.3|^6.0|^7.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "Knojector\\SteamAuthenticationBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "knojector",
-                    "email": "dev@knojector.xyz"
-                }
-            ],
-            "description": "Symfony Bundle to integrate Steam authentication",
-            "support": {
-                "issues": "https://github.com/knojector/SteamAuthenticationBundle/issues",
-                "source": "https://github.com/knojector/SteamAuthenticationBundle/tree/1.4.0"
-            },
-            "time": "2024-02-01T21:18:26+00:00"
-        },
-        {
-            "name": "koraktor/steam-condenser",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/koraktor/steam-condenser-php.git",
-                "reference": "92dde9e3b462e93cc498fe795a712c61eec7051e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/koraktor/steam-condenser-php/zipball/92dde9e3b462e93cc498fe795a712c61eec7051e",
-                "reference": "92dde9e3b462e93cc498fe795a712c61eec7051e",
-                "shasum": ""
-            },
-            "require": {
-                "monolog/monolog": "~1.10",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpdocumentor/phpdocumentor": "~2.6.1",
-                "phpunit/phpunit": "~4.1.3"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/SteamCondenser.php"
-                ],
-                "psr-4": {
-                    "SteamCondenser\\": "lib/SteamCondenser"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Staudt",
-                    "email": "koraktor@gmail.com"
-                }
-            ],
-            "description": "The Steam Condenser is a library for querying the Steam Community, Source and GoldSrc game servers",
-            "homepage": "http://koraktor.de/steam-condenser",
-            "keywords": [
-                "community",
-                "goldsrc",
-                "query",
-                "source",
-                "steam",
-                "webapi"
-            ],
-            "support": {
-                "email": "steam-condenser@googlegroups.com",
-                "issues": "https://github.com/koraktor/steam-condenser/issues",
-                "source": "https://github.com/koraktor/steam-condenser-php",
-                "wiki": "https://github.com/koraktor/steam-condenser/wiki"
-            },
-            "time": "2015-11-05T07:13:44+00:00"
         },
         {
             "name": "league/csv",
@@ -4173,70 +4018,6 @@
             "time": "2024-04-18T09:32:20+00:00"
         },
         {
-            "name": "symfony/expression-language",
-            "version": "v6.4.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/expression-language.git",
-                "reference": "3524904fb026356a5230cd197f9a4e6a61e0e7df"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/expression-language/zipball/3524904fb026356a5230cd197f9a4e6a61e0e7df",
-                "reference": "3524904fb026356a5230cd197f9a4e6a61e0e7df",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1",
-                "symfony/cache": "^5.4|^6.0|^7.0",
-                "symfony/deprecation-contracts": "^2.5|^3",
-                "symfony/service-contracts": "^2.5|^3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\ExpressionLanguage\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides an engine that can compile and evaluate expressions",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/expression-language/tree/v6.4.13"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2024-10-09T08:40:40+00:00"
-        },
-        {
             "name": "symfony/filesystem",
             "version": "v6.4.13",
             "source": {
@@ -4682,23 +4463,23 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v6.4.15",
+            "version": "v6.4.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "cb4073c905cd12b8496d24ac428a9228c1750670"
+                "reference": "88898d842eb29d7e1a903724c94e90a6ca9c0509"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/cb4073c905cd12b8496d24ac428a9228c1750670",
-                "reference": "cb4073c905cd12b8496d24ac428a9228c1750670",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/88898d842eb29d7e1a903724c94e90a6ca9c0509",
+                "reference": "88898d842eb29d7e1a903724c94e90a6ca9c0509",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1",
                 "psr/log": "^1|^2|^3",
                 "symfony/deprecation-contracts": "^2.5|^3",
-                "symfony/http-client-contracts": "^3.4.1",
+                "symfony/http-client-contracts": "~3.4.4|^3.5.2",
                 "symfony/service-contracts": "^2.5|^3"
             },
             "conflict": {
@@ -4755,7 +4536,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v6.4.15"
+                "source": "https://github.com/symfony/http-client/tree/v6.4.17"
             },
             "funding": [
                 {
@@ -4771,20 +4552,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-13T13:40:18+00:00"
+            "time": "2024-12-18T12:18:31+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
-            "version": "v3.5.0",
+            "version": "v3.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client-contracts.git",
-                "reference": "20414d96f391677bf80078aa55baece78b82647d"
+                "reference": "ee8d807ab20fcb51267fdace50fbe3494c31e645"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/20414d96f391677bf80078aa55baece78b82647d",
-                "reference": "20414d96f391677bf80078aa55baece78b82647d",
+                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/ee8d807ab20fcb51267fdace50fbe3494c31e645",
+                "reference": "ee8d807ab20fcb51267fdace50fbe3494c31e645",
                 "shasum": ""
             },
             "require": {
@@ -4792,12 +4573,12 @@
             },
             "type": "library",
             "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/contracts",
+                    "name": "symfony/contracts"
+                },
                 "branch-alias": {
                     "dev-main": "3.5-dev"
-                },
-                "thanks": {
-                    "name": "symfony/contracts",
-                    "url": "https://github.com/symfony/contracts"
                 }
             },
             "autoload": {
@@ -4833,7 +4614,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client-contracts/tree/v3.5.0"
+                "source": "https://github.com/symfony/http-client-contracts/tree/v3.5.2"
             },
             "funding": [
                 {
@@ -4849,7 +4630,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T09:32:20+00:00"
+            "time": "2024-12-07T08:49:48+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -11522,13 +11303,11 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "koraktor/steam-condenser": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.3"
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"

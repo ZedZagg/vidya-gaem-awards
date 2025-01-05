@@ -3,7 +3,6 @@ namespace App\Controller;
 
 use App\Entity\Advertisement;
 use App\Entity\BaseUser;
-use App\Entity\CaptchaGame;
 use App\Entity\LootboxItem;
 use App\Entity\LootboxTier;
 use App\Entity\User;
@@ -238,7 +237,6 @@ class VotingController extends AbstractController
 
         $lootboxSettings = [
             'cost' => $configService->get('lootbox-cost'),
-            'captchaLimit' => $configService->get('captcha-limit'),
         ];
 
         $lootboxTiers = $em->createQueryBuilder()
@@ -255,12 +253,6 @@ class VotingController extends AbstractController
             ->where('uii.user = :user')
             ->setParameter('user', $user->getFuzzyID())
             ->andWhere('i.extra IS NOT NULL')
-            ->getQuery()
-            ->getResult();
-
-        $captchaGames = $em->createQueryBuilder()
-            ->select('cg')
-            ->from(CaptchaGame::class, 'cg')
             ->getQuery()
             ->getResult();
 
@@ -286,11 +278,6 @@ class VotingController extends AbstractController
             'knownItems' => $knownItems,
             'rewardCSS' => $customCss,
             'showFantasyPromo' => !$predictionService->arePredictionsLocked(),
-            'captchaSettings' => [
-                'games' => $captchaGames,
-                'rows' => CaptchaGame::ROWS,
-                'columns' => CaptchaGame::COLUMNS,
-            ],
         ]);
     }
 

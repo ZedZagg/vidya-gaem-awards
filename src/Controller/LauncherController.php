@@ -16,7 +16,11 @@ class LauncherController extends AbstractController
     {
         $timezone = new DateTimeZone($configService->getConfig()->getTimezone());
 
-        $streamDate = new DateTimeImmutable($configService->getConfig()->getStreamTime()->format('Y-m-d H:i:s'), $timezone);
+        if ($configService->getConfig()->getStreamTime()) {
+            $streamDate = new DateTimeImmutable($configService->getConfig()->getStreamTime()->format('Y-m-d H:i:s'), $timezone);
+        } else {
+            $streamDate = null;
+        }
 
         $timezones = [
             'Honolulu' => 'Pacific/Honolulu',
@@ -65,10 +69,14 @@ class LauncherController extends AbstractController
     {
         $timezone = new DateTimeZone($configService->getConfig()->getTimezone());
 
-        $streamDate = DateTimeImmutable::createFromMutable($configService->getConfig()->getStreamTime());
-        $streamDate = $streamDate->setTimezone($timezone);
-
-        $showCountdown = ($streamDate > new DateTime('now', $timezone));
+        if ($configService->getConfig()->getStreamTime()) {
+            $streamDate = DateTimeImmutable::createFromMutable($configService->getConfig()->getStreamTime());
+            $streamDate = $streamDate->setTimezone($timezone);
+            $showCountdown = ($streamDate > new DateTime('now', $timezone));
+        } else {
+            $streamDate = null;
+            $showCountdown = false;
+        }
 
         // Fake ads
         $adverts = $em->getRepository(Advertisement::class)->findBy(['special' => 0]);
