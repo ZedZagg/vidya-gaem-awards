@@ -333,6 +333,7 @@
 
     <div class="your-votes" style="margin-bottom: 10px;">
       Awards
+      <div class="votes-left">{{ awards|filter(v => not allVotes[v.id])|length }} left </div>
     </div>
 
     <ul class="awards">

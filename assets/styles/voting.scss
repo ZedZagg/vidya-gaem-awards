@@ -168,6 +168,7 @@ header {
   mask-size: 100% 100%;
   padding: 30px;
   padding-top: 60px;
+  box-shadow: inset 0px 0px 40px #44321a;
 }
 
 /* Award` Header (including left/right navigation buttons) */
@@ -306,6 +307,16 @@ header {
     color: rgba(180, 80, 22, 0.8);
     mix-blend-mode: color-burn;
     font-size: 67px;
+
+    .votes-left {
+      float: right;
+      width: 0px;
+      rotate: 20deg;
+      position: relative;
+      right: 40px;
+      line-height: 1;
+      font-size: 0.8em;
+    }
   }
 
   h2 {
