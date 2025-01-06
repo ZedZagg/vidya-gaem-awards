@@ -67,28 +67,8 @@ header {
 
   .right-container {
     max-width: 50%;
-    overflow: hidden;
-    filter: brightness(1);
     padding: 6px;
-
-    .inner-border {
-      border: 2px solid rgba(149, 149, 147, 0.75);
-      padding: 10px;
-      mix-blend-mode: color-dodge;
-    }
-
-    .inner-background {
-      background-image: url("/2024images/planks-seamless.png");
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      top: 0px;
-      z-index: -1;
-      left: 0px;
-      transform: rotate(1deg) scaleY(1.5);
-      filter: brightness(0.7) saturate(0.6);
-      box-shadow: inset 0 0 8px rgb(11, 9, 9);
-    }
+    position: relative;
 
     .title-text {
       font-family: "Western Title";
@@ -99,6 +79,8 @@ header {
       text-align: center;
       line-height: 1;
       top: 8px;
+      padding: 10px;
+      mix-blend-mode: color-dodge;
 
       .line-1 {
         //text-transform: uppercase;
@@ -155,7 +137,7 @@ header {
   }
 
   .plank-inner-border {
-    padding: 10px;
+    padding: 7px;
     height: 100%;
 
     &::after {
@@ -178,14 +160,15 @@ header {
 }
 
 .poster-background {
-  background-size: cover;
+  background-size: 100% 100%;
   background-image: url("/2024images/paper2.jpg");
-  -webkit-mask-image: url(/2023images/mask.png);
+  -webkit-mask-image: url(/2024images/paper-edge-mask.png);
   -webkit-mask-size: 100% 100%;
-  mask-image: url(/2023images/mask.png);
+  mask-image: url(/2024images/paper-edge-mask.png);
   mask-size: 100% 100%;
   padding: 30px;
   padding-top: 60px;
+  box-shadow: inset 0px 0px 40px #44321a;
 }
 
 /* Award` Header (including left/right navigation buttons) */
@@ -324,6 +307,16 @@ header {
     color: rgba(180, 80, 22, 0.8);
     mix-blend-mode: color-burn;
     font-size: 67px;
+
+    .votes-left {
+      float: right;
+      width: 0px;
+      rotate: 20deg;
+      position: relative;
+      right: 40px;
+      line-height: 1;
+      font-size: 0.8em;
+    }
   }
 
   h2 {
@@ -334,7 +327,6 @@ header {
 
   .awards {
     font-family: "Handwritten", sans-serif;
-    text-shadow: 1px 1px 2px #CF282F;
     column-count: 2;
     list-style: none;
     padding-left: 10px;
@@ -358,7 +350,7 @@ header {
 
   .award {
     color: white;
-    text-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 6px rgba(180,80,0, 9.5);
+    text-shadow: 0 0 10px rgba(0,0,0,0.7), 0 0 6px rgba(180,80,0, 9.5);
     text-decoration: none;
 
     &.complete {
@@ -1531,8 +1523,9 @@ body {
   //font-size: 20px;
 
   a {
-    font-family: "ChronoType", sans-serif;
-    color: white;
+    font-family: "Handwritten", sans-serif;
+    color: rgba(180, 80, 22, 0.8);
+    mix-blend-mode: color-burn;
     &:hover {
       text-decoration: underline;
     }
