@@ -163,6 +163,11 @@ class UserListener
             return false;
         }
 
+        // Clearing the cache in the middle of request causes problems with accessing the user
+        if ($request->attributes->get('_route') === 'configPurgeCache') {
+            return false;
+        }
+
         return true;
     }
 }
