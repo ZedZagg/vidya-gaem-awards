@@ -380,29 +380,7 @@ a:hover {
   /*box-shadow: 2px 2px #0EBF8C, 3px 3px 1px rgba(0, 0, 0, 0.5);*/
 }
 
-.btn-show-sword-always::before,
-.btn:not(.no-sword):hover::before,
-.btn:not(.no-sword):focus::before {
-  content: ' ';
-  background-image: url(/2023images/button-sword.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 42px;
-  height: 30px;
-  display: block;
-  position: absolute;
-  left: -23px;
-  top: 10%;
-}
 
-.btn-lg.btn-show-sword-always::before,
-.btn-lg:not(.no-sword):hover::before,
-.btn-lg:not(.no-sword):focus::before {
-  width: 70px;
-  height: 40px;
-  left: -35px;
-  top: 3px;
-}
 
 .btn:disabled::before {
   display: none !important;

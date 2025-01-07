@@ -857,6 +857,7 @@ $card-width: 350px;
 
 #shekelCount .inventory-item {
   background-image: url(/2022images/orangebg-no-rivet.png);
+  background-size: 100% 100%;
 }
 
 #rewards .item-inner-wrapper {
@@ -1126,6 +1127,7 @@ body {
 }
 
 .hoverOverlay.adjustForLink {
+  visibility: hidden;
   bottom: 39px;
   z-index: 49;
 }

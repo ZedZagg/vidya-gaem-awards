@@ -28,6 +28,11 @@
   text-align: center;
 }
 
+.flavorText.longFlavorText{
+    font-size: 0.85em;
+    line-height: 13px;
+}
+
 .aNominee .flavorText {
   padding: 5px;
 }
@@ -64,6 +69,7 @@
   background: rgba(50, 50, 50, 0.5);
   padding: 0 3px 5px 3px;
   /*border-top: 1px dotted #c2c5b5;*/
+  text-shadow: 1px 1px black;
 }
 
 .nomineeName {
@@ -141,6 +147,7 @@
   width: calc(25% - 12px);
   position: relative;
   user-select: none;
+  letter-spacing: 0.25px;
 }
 
 @media screen and (max-width: 1000px) {

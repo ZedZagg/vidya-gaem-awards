@@ -202,7 +202,7 @@
                         </div>
                       {% endif %}
                       {% if nominee.flavorText %}
-                        <div class="flavorText">
+                        <div class="flavorText {{ nominee.flavorText|length > 200 ? 'longFlavorText' }}">
                             {{ nominee.flavorText | nl2br }}
                         </div>
                       {% endif %}
@@ -333,7 +333,9 @@
 
     <div class="your-votes" style="margin-bottom: 10px;">
       Awards
-      <div class="votes-left">{{ awards|filter(v => not allVotes[v.id])|length }} left </div>
+      {% if votingOpen %}
+        <div class="votes-left">{{ awards|filter(v => not allVotes[v.id])|length }} left </div>
+      {% endif %}
     </div>
 
     <ul class="awards">
