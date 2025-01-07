@@ -393,10 +393,10 @@ configPost:
     methods:    [POST]
     controller: App\Controller\ConfigController::postAction
 
-configPurgeCloudflareCache:
-    path:       /config/purge-cloudflare-cache
+configPurgeCache:
+    path:       /config/purge-cache
     methods:    [POST]
-    controller: App\Controller\ConfigController::purgeCloudflareCacheAction
+    controller: App\Controller\ConfigController::purgeCacheAction
 
 cron:
     path:       /config/cron

@@ -58,6 +58,7 @@ class AuditLogController extends AbstractController
             'nomination-group-merged' => 'Merged two user nominations',
             'nomination-group-demerged' => 'Demerged two user nominations',
             'nomination-group-updated' => 'Updated a user nomination group',
+            'config-cache-cleared' => 'Cleared the website cache',
         ];
 
         $result = $em->createQueryBuilder()

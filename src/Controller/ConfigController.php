@@ -11,10 +11,14 @@ use App\Service\CronJobService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
@@ -22,9 +26,10 @@ use Symfony\Component\Routing\RouterInterface;
 class ConfigController extends AbstractController
 {
     public function __construct(
-        private ConfigService     $configService,
+        private ConfigService $configService,
         private CloudflareService $cloudflare,
-        private CronJobService    $cron, private readonly CloudflareService $cloudflareService,
+        private CronJobService $cron,
+        private AuditService $auditService,
     ) {
     }
 
@@ -62,7 +67,7 @@ class ConfigController extends AbstractController
         ]);
     }
 
-    public function postAction(EntityManagerInterface $em, Request $request, AuditService $auditService, RouterInterface $router): RedirectResponse
+    public function postAction(EntityManagerInterface $em, Request $request, RouterInterface $router): RedirectResponse
     {
         $config = $this->configService->getConfig();
 
@@ -87,7 +92,7 @@ class ConfigController extends AbstractController
             // mode is active, the controls for the cron job become unavailable.
             $this->cron->disableCronJob();
 
-            $auditService->add(
+            $this->auditService->add(
                 new Action('config-readonly-enabled')
             );
 
@@ -185,7 +190,7 @@ class ConfigController extends AbstractController
         $em->persist($config);
         $em->flush();
 
-        $auditService->add(
+        $this->auditService->add(
             new Action('config-updated', 1),
             new TableHistory(Config::class, 1, $post->all())
         );
@@ -237,7 +242,7 @@ class ConfigController extends AbstractController
         ]);
     }
 
-    public function cronPostAction(Request $request, AuditService $auditService): RedirectResponse
+    public function cronPostAction(Request $request): RedirectResponse
     {
         $config = $this->configService->getConfig();
         $post = $request->request;
@@ -256,12 +261,12 @@ class ConfigController extends AbstractController
         $currentlyEnabled = $this->cron->isCronJobEnabled();
         if (!$currentlyEnabled && $enable) {
             $this->cron->enableCronJob();
-            $auditService->add(
+            $this->auditService->add(
                 new Action('cron-results-enabled')
             );
         } elseif ($currentlyEnabled && !$enable) {
             $this->cron->disableCronJob();
-            $auditService->add(
+            $this->auditService->add(
                 new Action('cron-results-disabled')
             );
         }
@@ -280,15 +285,59 @@ class ConfigController extends AbstractController
         return $this->redirectToRoute('cron');
     }
 
-    public function purgeCloudflareCacheAction(): RedirectResponse
+    public function purgeCacheAction(Request $request, KernelInterface $kernel): RedirectResponse
     {
-        if (!$this->cloudflareService->isServiceAvailable()) {
-            $this->addFlash('error', 'Cloudflare service is not available.');
+        $type = $request->request->get('type');
+
+        if ($this->configService->isReadOnly()) {
+            $this->addFlash('error', 'The site is currently in read-only mode. Please clear the cache the old fashioned way.');
             return $this->redirectToRoute('config');
         }
 
-        $this->cloudflare->purgeCache();
-        $this->addFlash('success', 'Cloudflare cache has been purged.');
+        if ($type === 'cloudflare') {
+            if (!$this->cloudflare->isServiceAvailable()) {
+                $this->addFlash('error', 'Cloudflare service is not available.');
+                return $this->redirectToRoute('config');
+            }
+
+            $this->cloudflare->purgeCache();
+            $this->addFlash('success', 'Cloudflare cache has been purged.');
+
+            $this->auditService->add(
+                new Action('config-cache-cleared', 1),
+                new TableHistory(Config::class, 1, $request->request->all())
+            );
+
+            return $this->redirectToRoute('config');
+        }
+
+        if ($type === 'symfony') {
+            // Must run before the cache is cleared or Doctrine loses the reference to the user
+            $this->auditService->add(
+                new Action('config-cache-cleared', 1),
+                new TableHistory(Config::class, 1, $request->request->all())
+            );
+
+            $application = new Application($kernel);
+            $application->setAutoExit(false);
+
+            $input = new ArrayInput([
+                'command' => 'cache:clear',
+            ]);
+
+            $output = new BufferedOutput();
+            $exitCode = $application->run($input, $output);
+
+            if ($exitCode === 0) {
+                $this->addFlash('success', 'Symfony cache has been purged.');
+            } else {
+                $this->addFlash('error', 'An error occurred (exit code ' . $exitCode . ').');
+            }
+
+            return $this->redirectToRoute('config');
+        }
+
+        $this->addFlash('error', 'Invalid cache type specified.');
         return $this->redirectToRoute('config');
     }
 }

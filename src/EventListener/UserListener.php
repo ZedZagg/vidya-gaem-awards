@@ -129,6 +129,17 @@ class UserListener
             /** @var User $user */
             $user = $this->tokenStorage->getToken()->getUser();
 
+            // Strip out invalid UTF-8
+            $headers = $request->headers->all();
+            foreach ($headers as $key => $value) {
+                $headers[$key] = array_map(function ($value) {
+                    return mb_convert_encoding($value, "UTF-8", "UTF-8");
+                }, $value);
+            }
+
+            $userAgent = mb_convert_encoding($request->server->get('HTTP_USER_AGENT', ''), "UTF-8", "UTF-8");
+            $referer = mb_convert_encoding($request->server->get('HTTP_REFERER', ''), "UTF-8", "UTF-8");
+
             $access
                 ->setCookieID($user->getRandomID() ?: $randomIDSession)
                 ->setRoute($request->attributes->get('_route', ''))
@@ -136,10 +147,10 @@ class UserListener
                 ->setRequestMethod($request->server->get('REQUEST_METHOD'))
                 ->setRequestString($request->server->get('REQUEST_URI'))
                 ->setIp($user->getIP() ?: self::getIpAddress($request))
-                ->setUserAgent(substr($request->server->get('HTTP_USER_AGENT', ''), 0, 255))
+                ->setUserAgent(substr($userAgent, 0, 255))
                 ->setFilename($request->server->get('SCRIPT_FILENAME'))
-                ->setReferer($request->server->get('HTTP_REFERER'))
-                ->setHeaders($request->headers->all());
+                ->setReferer($referer ?: null)
+                ->setHeaders($headers);
 
             if ($user->isLoggedIn()) {
                 $access->setUser($user);
@@ -160,6 +171,11 @@ class UserListener
 
         // Don't log anything that doesn't come through to our code (includes login/logout).
         if (!$request->attributes->get('_controller')) {
+            return false;
+        }
+
+        // Clearing the cache in the middle of request causes problems with accessing the user
+        if ($request->attributes->get('_route') === 'configPurgeCache') {
             return false;
         }
 

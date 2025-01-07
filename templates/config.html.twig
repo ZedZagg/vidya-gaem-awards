@@ -247,20 +247,23 @@
     </div>
     <div class="col-md-6 mb-4">
       <div class="card">
-        <h5 class="card-header">Purge Cloudflare cache</h5>
+        <h5 class="card-header">Site caches</h5>
         <div class="card-body">
-          {% if cloudflareAvailable %}
-            <p>
-              This will purge the Cloudflare cache for the site. This is usually only needed for developers, and does
-              not affect the local Symfony cache.
-            </p>
-            <form action="{{ path('configPurgeCloudflareCache') }}" method="post">
-              <button type="submit" class="btn btn-danger btn-sm"
-                      onclick="return confirm('Are you sure you want to purge the Cloudflare cache?')">Purge cache</button>
-            </form>
-          {% else %}
-            The cache cannot be purged as the Cloudflare service has not been configured.
-          {% endif %}
+          <p>
+            From here you can purge the caches for the site. This is usually only needed for developers after a deployment.
+          </p>
+          <form action="{{ path('configPurgeCache') }}" method="post" class="d-flex align-items-start gap-2">
+            <button class="btn btn-warning btn-sm" name="type" value="symfony">Clear Symfony cache</button>
+            {% if cloudflareAvailable %}
+              <button type="submit" class="btn btn-warning btn-sm" name="type" value="cloudflare"
+                      onclick="return confirm('Are you sure you want to purge the Cloudflare cache?')">Purge Cloudflare cache</button>
+            {% else %}
+              <div>
+                <button class="btn btn-secondary disabled btn-sm">Purge Cloudflare cache</button>
+                <div class="form-text">Not configured</div>
+              </div>
+            {% endif %}
+          </form>
         </div>
       </div>
     </div>
