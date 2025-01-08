@@ -113,6 +113,12 @@ class LootboxService {
 
         $maxDropValue = (int) ($maxDropValue * 100000);
 
+        // The drop values aren't calculated correctly when there's only items with an absolute drop chance in the
+        // database. Return no items when this is the case.
+        if ($maxDropValue <= 0) {
+            return null;
+        }
+
         $randomNumber = random_int(0, $maxDropValue);
 
         return $this->itemRepo->createQueryBuilder('i')

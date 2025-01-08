@@ -121,8 +121,12 @@
                   if (!data.success) {
                       $('#dialog-edit .absolute-drop-chance').text('Error');
                   } else {
-                      const denominator = Math.round(1 / data.absoluteDropChance);
-                      $('#dialog-edit .absolute-drop-chance').text((data.absoluteDropChance * 100).toFixed(5) + '% (~1 in ' + denominator + ')');
+                      if (data.absoluteDropChance === null) {
+                          $('#dialog-edit .absolute-drop-chance').text('Unknown');
+                      } else {
+                          const denominator = Math.round(1 / data.absoluteDropChance);
+                          $('#dialog-edit .absolute-drop-chance').text((data.absoluteDropChance * 100).toFixed(5) + '% (~1 in ' + denominator + ')');
+                      }
                   }
               });
           }
