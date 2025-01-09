@@ -79,7 +79,7 @@ class ImageCheckCommand extends Command
                 $image = file_get_contents($file);
                 $size = strlen($image) / 1024;
 
-                $img = imagecreatefromstring($image);
+                $img = @imagecreatefromstring($image);
 
                 $totalSize += $size;
 
@@ -93,7 +93,12 @@ class ImageCheckCommand extends Command
 
                 $string = sprintf('%3d kB', $size);
                 $output->write("<$class>$string</$class>");
-                $output->writeln(sprintf("   %4d x %4d", imagesx($img), imagesy($img)));
+
+                if ($img) {
+                    $output->writeln(sprintf("   %4d x %4d", imagesx($img), imagesy($img)));
+                } else {
+                    $output->writeln("   unknown");
+                }
             }
 
             $output->writeln( '  ' . str_repeat('-', $longestName + 3 + 6));
