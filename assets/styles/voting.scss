@@ -156,7 +156,7 @@ header {
   top: 0px;
   left: 0px;
   z-index: -1;
-  overflow: clip;
+  overflow: hidden;
 }
 
 .poster-background {
@@ -169,6 +169,31 @@ header {
   padding: 30px;
   padding-top: 60px;
   box-shadow: inset 0px 0px 40px #44321a;
+}
+
+.buddy-helper-1{
+  width: 0px;
+  height: 0px;
+}
+.buddy-helper-2{
+  width: 0px;
+  height: 0px;
+}
+.buddy-helper-3{
+  width: 0px;
+  height: 0px;
+}
+.buddy-helper-4{
+  width: 0px;
+  height: 0px;
+}
+.buddy-helper-5{
+  width: 0px;
+  height: 0px;
+}
+.buddy-helper-6{
+  width: 0px;
+  height: 0px;
 }
 
 /* Award` Header (including left/right navigation buttons) */
@@ -565,7 +590,11 @@ header {
 
 .lootbox-image {
   position: relative;
-  top: 40px;
+  top: 22px;
+  margin: auto;
+  transform: scale(2);
+  transform-origin: bottom;
+  image-rendering: pixelated;
 }
 
 .lootbox {
@@ -608,7 +637,7 @@ header {
 #rewards, .themed-modal {
   .modal-content {
     min-width: 200px;
-    background: url('/2023images/battle-bg.png');
+    background: url('/2024images/loot-background.png');
     background-size: cover;
     //image-rendering: pixelated;
     border: 20px white ridge;
@@ -661,6 +690,18 @@ header {
   .modal-footer {
     position: absolute;
     bottom: 0;
+
+    #closeRewards {
+      color: white;
+      font-family: "NES Pixel";
+
+      div {
+        cursor: pointer;
+        &:hover::before {
+          content: "▶ ";
+        }
+      }
+    }
   }
 }
 
@@ -857,6 +898,7 @@ $card-width: 350px;
 
 #shekelCount .inventory-item {
   background-image: url(/2022images/orangebg-no-rivet.png);
+  background-size: 100% 100%;
 }
 
 #rewards .item-inner-wrapper {
@@ -1126,6 +1168,7 @@ body {
 }
 
 .hoverOverlay.adjustForLink {
+  visibility: hidden;
   bottom: 39px;
   z-index: 49;
 }
@@ -1978,6 +2021,20 @@ a:hover {
 //    ), url(/2020images/cardbg.png);
 //  }
 //}
+
+.lootbox-prompt {
+  font-family: "NES Pixel";
+  color: white;
+
+  #loot-modal-flavor{
+    padding-bottom: 15px;
+  }
+
+  #shoot:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
 
 .inventory-header {
   display: flex;

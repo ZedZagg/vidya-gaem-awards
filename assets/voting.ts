@@ -632,21 +632,31 @@ jQuery(function () {
         $('.lootbox-image').show();
 
         var lootboxes = [
-          'chimera.png',
-          'drakee.png',
-          'droll.png',
-          'golem.png',
-          'knight.png',
-          'scorpion.png',
-          'skeleton.png',
-          'slime.png',
-          'spectre.png',
-          'warlock.png',
+          '1.png',
+          '2.png',
+          '3.png',
+          '4.png',
+          '5.png',
+          '6.png',
+          '7.png',
+          '8.png',
+          '9.png',
+          '10.png',
+          '11.png',
         ];
 
         $('.lootbox-image').each(function () {
-            $(this).attr('src', '/2023images/lootbox_sprites/' + lootboxes[getRandomInt(0, lootboxes.length)]);
+            $(this).attr('src', '/2024images/lootbox_sprites/' + lootboxes[getRandomInt(0, lootboxes.length)]);
         });
+
+        var prompts = [
+            '"Stick em up!"',
+            '"Watch it, partner!"',
+            'Bandits!',
+            '"This town aint big enough for the two of us"',
+            '"Today is Friday in California"'
+          ];
+        $('#loot-modal-flavor').text(prompts[getRandomInt(0, prompts.length)]);
 
         if (getRandomInt(1,7) === 6) {
             $('#youre').attr('src', '/2022images/youre-rewards.png');

@@ -63,6 +63,12 @@
 {% endblock %}
 
 {% block body %}
+  <div class="buddy-helper-1"></div>
+  <div class="buddy-helper-2"></div>
+  <div class="buddy-helper-3"></div>
+  <div class="buddy-helper-4"></div>
+  <div class="buddy-helper-5"></div>
+  <div class="buddy-helper-6"></div>
   <div class="background-decorations">
 
   {#
@@ -185,7 +191,7 @@
                   <div class="voteBox">
                     <div class="number" style="display: none;">{{ loop.index }}</div>
                     <div class="nominee">
-                      <div class="fakeElement" style="background-image: url('{{ nominee.image ? nominee.image.url : asset('img/no-image-available.png') }}'); background-size: cover"></div>
+                      <div class="fakeElement" style="background-image: url('{{ nominee.image ? nominee.image.url : asset('img/no-image-available.png') }}'); background-size: 100% 100%"></div>
                       <div class="handle fakeHandle"></div>
                       {% if votingOpen %}
                         <div class="hoverOverlay overlayWhenTop {{ 'href=' in nominee.subtitle ? 'adjustForLink' : '' }}">
@@ -202,7 +208,7 @@
                         </div>
                       {% endif %}
                       {% if nominee.flavorText %}
-                        <div class="flavorText">
+                        <div class="flavorText {{ nominee.flavorText|length > 200 ? 'longFlavorText' }}">
                             {{ nominee.flavorText | nl2br }}
                         </div>
                       {% endif %}
@@ -240,11 +246,11 @@
                 <div class="buttons" style="margin-top: 10px;">
                   <div id="btnResetVotes" class="btnSubmit" title="Reset Votes">
                     <div class="hoverArrow">&gt;</div>
-                    <div>RESET</div>
+                    <div id="resetText">RESET</div>
                   </div>
                   <div id="btnLockVotes" class="btnSubmit" title="Submit Votes">
                     <div class="hoverArrow">&gt;</div>
-                    <div>SUBMIT</div>
+                    <div id="submitText">SUBMIT</div>
                   </div>
                 </div>
               {% endif %}
@@ -333,7 +339,9 @@
 
     <div class="your-votes" style="margin-bottom: 10px;">
       Awards
-      <div class="votes-left">{{ awards|filter(v => not allVotes[v.id])|length }} left </div>
+      {% if votingOpen %}
+        <div class="votes-left">{{ awards|filter(v => not allVotes[v.id])|length }} left </div>
+      {% endif %}
     </div>
 
     <ul class="awards">
@@ -497,10 +505,13 @@
             </div>
 
             <div class="modal-footer" style="text-align: center;">
-              <button type="button" class="btn btn-show-sword-always btn-lootbox btn-lg" id="unboxButton">Attack!</button>
+              <div class="lootbox-prompt" id="unboxButton">
+                <div id="loot-modal-flavor">"Stick em up!"</div>
+                <div id="shoot">▶ Shoot!</div>
+              </div>
               <div id="closeRewards" style="display: none;">
-                <button type="button" class="btn btn-lg btn-default" data-bs-dismiss="modal">Collect drops</button><br>
-                <button type="button" class="btn btn-default" id="neverShowAgain" style="margin-top: 5px;">Don't show this again</button>
+                <div data-bs-dismiss="modal">Collect drops</div><br>
+                <div id="neverShowAgain" style="margin-top: 5px;">Don't show this again</div>
               </div>
             </div>
           </div>
