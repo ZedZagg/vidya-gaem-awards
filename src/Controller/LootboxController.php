@@ -233,6 +233,9 @@ class LootboxController extends AbstractController
         $itemChances = $lootboxService->getItemArray($item, $originalItem);
         if (!isset($itemChances[$item->getId()])) {
             $absoluteDropChance = 0.0;
+        } else if (array_sum($itemChances) === 0.0) {
+            // Edge case where there are only items with an absolute drop chance override in the database
+            $absoluteDropChance = null;
         } else {
             $absoluteDropChance = $itemChances[$item->getId()] / array_sum($itemChances);
         }
