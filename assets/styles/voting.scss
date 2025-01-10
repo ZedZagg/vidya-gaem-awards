@@ -156,7 +156,7 @@ header {
   top: 0px;
   left: 0px;
   z-index: -1;
-  overflow: clip;
+  overflow: hidden;
 }
 
 .poster-background {
@@ -565,7 +565,7 @@ header {
 
 .lootbox-image {
   position: relative;
-  top: 40px;
+  top: 22px;
 }
 
 .lootbox {
@@ -608,7 +608,7 @@ header {
 #rewards, .themed-modal {
   .modal-content {
     min-width: 200px;
-    background: url('/2023images/battle-bg.png');
+    background: url('/2024images/loot-background.png');
     background-size: cover;
     //image-rendering: pixelated;
     border: 20px white ridge;
@@ -1980,6 +1980,20 @@ a:hover {
 //    ), url(/2020images/cardbg.png);
 //  }
 //}
+
+.lootbox-prompt {
+  font-family: "NES Pixel";
+  color: white;
+
+  #loot-modal-flavor{
+    padding-bottom: 15px;
+  }
+
+  #shoot:hover{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
 
 .inventory-header {
   display: flex;

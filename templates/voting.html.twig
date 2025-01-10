@@ -185,7 +185,7 @@
                   <div class="voteBox">
                     <div class="number" style="display: none;">{{ loop.index }}</div>
                     <div class="nominee">
-                      <div class="fakeElement" style="background-image: url('{{ nominee.image ? nominee.image.url : asset('img/no-image-available.png') }}'); background-size: cover"></div>
+                      <div class="fakeElement" style="background-image: url('{{ nominee.image ? nominee.image.url : asset('img/no-image-available.png') }}'); background-size: 100% 100%"></div>
                       <div class="handle fakeHandle"></div>
                       {% if votingOpen %}
                         <div class="hoverOverlay overlayWhenTop {{ 'href=' in nominee.subtitle ? 'adjustForLink' : '' }}">
@@ -499,7 +499,10 @@
             </div>
 
             <div class="modal-footer" style="text-align: center;">
-              <button type="button" class="btn btn-show-sword-always btn-lootbox btn-lg" id="unboxButton">Attack!</button>
+              <div class="lootbox-prompt" id="unboxButton">
+                <div id="loot-modal-flavor">"Stick em up!"</div>
+                <div id="shoot">▶ Shoot!</div>
+              </div>
               <div id="closeRewards" style="display: none;">
                 <button type="button" class="btn btn-lg btn-default" data-bs-dismiss="modal">Collect drops</button><br>
                 <button type="button" class="btn btn-default" id="neverShowAgain" style="margin-top: 5px;">Don't show this again</button>

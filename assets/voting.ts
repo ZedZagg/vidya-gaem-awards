@@ -645,8 +645,17 @@ jQuery(function () {
         ];
 
         $('.lootbox-image').each(function () {
-            $(this).attr('src', '/2023images/lootbox_sprites/' + lootboxes[getRandomInt(0, lootboxes.length)]);
+            $(this).attr('src', '/2024images/lootbox_sprites/' + lootboxes[getRandomInt(0, lootboxes.length)]);
         });
+
+        var prompts = [
+            '"Stick em up!"',
+            '"Watch it, partner!"',
+            'Bandits!',
+            '"This town aint big enough for the two of us"',
+            '"Today is Friday in California"'
+          ];
+        $('#loot-modal-flavor').text(prompts[getRandomInt(0, prompts.length)]);
 
         if (getRandomInt(1,7) === 6) {
             $('#youre').attr('src', '/2022images/youre-rewards.png');
