@@ -591,6 +591,10 @@ header {
 .lootbox-image {
   position: relative;
   top: 22px;
+  margin: auto;
+  transform: scale(2);
+  transform-origin: bottom;
+  image-rendering: pixelated;
 }
 
 .lootbox {

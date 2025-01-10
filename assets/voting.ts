@@ -632,16 +632,15 @@ jQuery(function () {
         $('.lootbox-image').show();
 
         var lootboxes = [
-          'chimera.png',
-          'drakee.png',
-          'droll.png',
-          'golem.png',
-          'knight.png',
-          'scorpion.png',
-          'skeleton.png',
-          'slime.png',
-          'spectre.png',
-          'warlock.png',
+          '1.png',
+          '2.png',
+          '3.png',
+          '4.png',
+          '5.png',
+          '6.png',
+          '7.png',
+          '8.png',
+          '9.png',
         ];
 
         $('.lootbox-image').each(function () {
