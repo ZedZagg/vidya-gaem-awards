@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
@@ -36,6 +37,10 @@ class LootboxItem implements JsonSerializable, DropChance
     #[ORM\ManyToOne(targetEntity: 'App\Entity\File')]
     private ?File $musicFile = null;
 
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\File')]
+    #[ORM\JoinTable(name: 'lootbox_item_files')]
+    private Collection $additionalFiles;
+
     #[ORM\Column(name: 'css_contents', type: 'text', nullable: true)]
     private ?string $cssContents = null;
 
@@ -66,6 +71,11 @@ class LootboxItem implements JsonSerializable, DropChance
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $extra = null;
+
+    public function __construct()
+    {
+        $this->additionalFiles = new ArrayCollection();
+    }
 
     public function setId($id): static
     {
@@ -175,6 +185,7 @@ class LootboxItem implements JsonSerializable, DropChance
             'dropChance' => $this->getDropChance(),
             'absoluteDropChance' => $this->getAbsoluteDropChance(),
             'extra' => $this->getExtra(),
+            'additionalFiles' => $this->getAdditionalFiles()->toArray(),
         ];
     }
 
@@ -277,6 +288,27 @@ class LootboxItem implements JsonSerializable, DropChance
     public function setExtra(?string $extra): self
     {
         $this->extra = $extra;
+
+        return $this;
+    }
+
+    public function getAdditionalFiles(): Collection
+    {
+        return $this->additionalFiles;
+    }
+
+    public function addAdditionalFile(File $file): self
+    {
+        if (!$this->additionalFiles->contains($file)) {
+            $this->additionalFiles[] = $file;
+        }
+
+        return $this;
+    }
+
+    public function removeAdditionalFile(File $file): self
+    {
+        $this->additionalFiles->removeElement($file);
 
         return $this;
     }

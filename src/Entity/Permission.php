@@ -29,6 +29,7 @@ class Permission
         'LEVEL_4' => 'Gives access to everything except for critical areas',
         'LEVEL_5' => 'Gives complete admin access',
         'items_manage' => 'View and manage the lootbox rewards',
+        'items_manage_special' => 'Gives access to special lootbox functionality',
         'news_manage' => 'Add and delete news items',
         'news_view_user' => 'View the user that posted each news item',
         'nominations_edit' => 'Edit official nominees',
@@ -50,9 +51,9 @@ class Permission
 
     const STANDARD_PERMISSION_INHERITANCE = [
         'LEVEL_1' => ['add_video_game', 'awards_feedback', 'nominations_view', 'tasks_view', 'view_unfinished_pages', 'voting_view'],
-        'LEVEL_2' => ['LEVEL_1', 'awards_secret', 'news_view_user', 'profile_view', 'tasks_nominees', 'voting_code'],
+        'LEVEL_2' => ['LEVEL_1', 'awards_secret', 'items_manage', 'news_view_user', 'profile_view', 'tasks_nominees', 'voting_code'],
         'LEVEL_3' => ['LEVEL_2', 'autocompleter_edit', 'awards_edit', 'nominations_edit', 'profile_edit_notes'],
-        'LEVEL_4' => ['LEVEL_3', 'add_user', 'arg_manage', 'audit_log_view', 'news_manage', 'profile_edit_details', 'referrers_view', 'voting_results', 'adverts_manage', 'items_manage'],
+        'LEVEL_4' => ['LEVEL_3', 'add_user', 'arg_manage', 'audit_log_view', 'news_manage', 'profile_edit_details', 'referrers_view', 'voting_results', 'adverts_manage', 'items_manage_special'],
         'LEVEL_5' => ['LEVEL_4', 'awards_delete', 'edit_config', 'template_edit', 'profile_edit_groups']
     ];
 
@@ -187,4 +188,3 @@ class Permission
         return $this->getId();
     }
 }
-

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Action;
+use App\Entity\File;
 use App\Entity\LootboxItem;
 use App\Entity\LootboxTier;
 use App\Entity\TableHistory;
@@ -185,6 +186,40 @@ class LootboxController extends AbstractController
             $item->setMusicFile($file);
             $em->persist($item);
             $em->flush();
+        }
+
+        if ($this->isGranted('ROLE_ITEMS_MANAGE_SPECIAL')) {
+            $additionalFiles = $request->files->get('additionalFile', []);
+            for ($i = 0; $i < count($additionalFiles); $i++) {
+                try {
+                    $file = $fileService->handleUploadedFile(
+                        $additionalFiles[$i],
+                        'LootboxItem.additionalFile',
+                        'lootboxExtras',
+                        null,
+                    );
+                } catch (Exception $e) {
+                    return $this->json(['error' => $e->getMessage()]);
+                }
+
+                $item->addAdditionalFile($file);
+                $em->persist($item);
+                $em->flush();
+            }
+
+            $additionalFilesToDelete = $post->all()['deleteAdditionalFile'] ?? [];
+
+            foreach ($additionalFilesToDelete as $fileId) {
+                $file = $em->getRepository(File::class)->find($fileId);
+                if (!$file) {
+                    return $this->json(['error' => 'Invalid file ID specified.']);
+                }
+
+                $item->removeAdditionalFile($file);
+                $em->remove($file);
+                $em->persist($item);
+                $em->flush();
+            }
         }
 
         $auditService->add(

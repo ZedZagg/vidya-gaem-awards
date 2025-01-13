@@ -79,6 +79,10 @@
       margin-left: -1rem;
       margin-right: -1rem;
     }
+
+    .additionalFile-filename {
+      flex: 1 1 auto;
+    }
   </style>
 {% endblock %}
 
@@ -161,6 +165,7 @@
 
                   $("#info-musicFile-container").hide();
                   $("#info-cssContents-container").hide();
+                  $("#info-additionalFiles-container").hide();
                   $("#info-drop-chance-override").hide();
 
               } else {
@@ -181,14 +186,28 @@
                   $("#info-css").prop("checked", item.css);
                   $("#info-buddie").prop("checked", item.buddie);
                   $("#info-music").prop("checked", item.music);
+                  $("#info-additionalFiles").prop("checked", item.additionalFiles.length > 0);
                   $("#info-cssContents").val(item.cssContents);
                   $("#info-tier").val(item.tier);
 
                   editDialog.find("input[type=file]").val("");
 
                   $("#info-musicFile-container").toggle(item.music);
-                  $("#info-cssContents-container").toggle(item.css);
+                  $("#info-cssContents-container").toggle(item.css || item.additionalFiles.length > 0);
                   $("#info-drop-chance-override").toggle(item.dropChance !== null || item.absoluteDropChance !== null);
+                  $("#info-additionalFiles-container").toggle(item.additionalFiles.length > 0);
+
+                  for (const file of item.additionalFiles) {
+                      const row = $(".additionalFile-existing-row").first()
+                          .clone()
+                          .removeClass('d-none')
+                          .attr('data-id', file.id)
+                          .appendTo("#info-additionalFiles-existing");
+
+                      row.find('.additionalFile-filename')
+                          .attr('href', file.url)
+                          .text(file.fullFilename);
+                  }
 
                   getAbsoluteDropChance();
               }
@@ -208,6 +227,31 @@
 
           $("#info-override-drop-chance").change(function(event) {
               $("#info-drop-chance-override").toggle($("#info-override-drop-chance").prop('checked'));
+          });
+
+          $("#info-additionalFiles").on('change', function () {
+              $("#info-additionalFiles-container").toggle($("#info-additionalFiles").prop('checked'));
+          });
+
+          $("#addAdditionalFile").on('click', function () {
+              $(".additionalFile-row").first()
+                  .clone()
+                  .addClass('new-file')
+                  .removeClass('d-none')
+                  .appendTo("#info-additionalFiles-rows")
+                  .find('input')
+                  .removeAttr('disabled');
+          })
+
+          $(document).on('click', '.delete-additional-file', function () {
+              $(this).closest('.additionalFile-row').remove();
+          });
+
+          $(document).on('click', '.delete-existing-additional-file', function () {
+              const row = $(this).closest('.additionalFile-existing-row');
+
+              $("#dialog-edit-form").append('<input type="hidden" name="deleteAdditionalFile[]" value="' + row.data('id') + '">');
+              row.remove();
           });
 
           $("#dialog-edit-form").submit(function (event) {
@@ -442,10 +486,12 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="info-image">Image</label>
+                <label class="col-sm-3 col-form-label" for="info-image">
+                  Image
+                </label>
                 <div class="col-sm-9">
                   <input type="file" id="info-image" name="image" class="form-control">
-                  <small class="form-text">Required image dimensions: <strong>200 x 200</strong></small>
+                  <small class="form-text">Recommended image dimensions: <strong>200 x 200</strong></small>
                 </div>
             </div>
 
@@ -476,21 +522,63 @@
                 </div>
             </div>
 
-            <div class="form-group row" id="info-cssContents-container">
-              <label class="col-sm-3 col-form-label" for="info-cssContents">CSS contents</label>
+            <div class="form-group row" id="info-musicFile-container">
+              <label class="col-sm-3 col-form-label" for="info-musicFile">Music file</label>
               <div class="col-sm-9">
-                <textarea name="cssContents" id="info-cssContents" class="form-control" style="font-size: 9px; font-family: monospace" rows="4"></textarea>
-                <small class="form-text">When this reward is equipped, the class <code id="code-id"></code> will be added to the root HTML element.</small>
+                <input type="file" id="info-musicFile" name="musicFile" class="form-control">
+                <small class="form-text">Required file type: <strong>.ogg</strong></small>
               </div>
             </div>
 
-            <div class="form-group row" id="info-musicFile-container">
-                <label class="col-sm-3 col-form-label" for="info-musicFile">Music file</label>
+            <div id="info-cssContents-container">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="info-cssContents">CSS contents</label>
                 <div class="col-sm-9">
-                  <input type="file" id="info-musicFile" name="musicFile" class="form-control">
-                  <small class="form-text">Required file type: <strong>.ogg</strong></small>
+                  <textarea name="cssContents" id="info-cssContents" class="form-control" style="font-size: 9px; font-family: monospace" rows="4"></textarea>
+                  <small class="form-text">When this reward is equipped, the class <code id="code-id"></code> will be added to the root HTML element.</small>
                 </div>
+              </div>
+
+              {% if is_granted('ROLE_ITEMS_MANAGE_SPECIAL') %}
+                <div class="form-group row">
+                  <div class="offset-sm-3 col-sm-9">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="info-additionalFiles" name="additionalFiles">
+                      <label class="form-check-label" for="info-additionalFiles">CSS requires additional files</label>
+                    </div>
+                    <small class="form-text">For especially fancy CSS that needs additional images or fonts. Use as needed, but drink responsibly.</small>
+                  </div>
+                </div>
+              {% endif %}
             </div>
+
+            {% if is_granted('ROLE_ITEMS_MANAGE_SPECIAL') %}
+              <div class="form-group row" id="info-additionalFiles-container">
+                <label class="col-sm-3 col-form-label">Additional files</label>
+                <div class="col-sm-9">
+                  <div id="info-additionalFiles-existing">
+                    <div class="input-group d-none additionalFile-existing-row mb-2">
+                      <a href="#" class="input-group-text additionalFile-filename" target="_blank">
+
+                      </a>
+                      <button class="btn btn-warning delete-existing-additional-file" type="button">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div id="info-additionalFiles-rows">
+                    <div class="input-group mb-2 additionalFile-row new-file d-none">
+                      <input type="file" name="additionalFile[]" class="form-control" disabled>
+                      <input type="hidden" name="additionalFileId[]" value="0" disabled>
+                      <button class="btn btn-warning delete-additional-file" type="button">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <button class="btn btn-outline-secondary btn-sm" type="button" id="addAdditionalFile"><i class="fa-regular fa-plus"></i> Add additional file</button>
+                </div>
+              </div>
+            {% endif %}
           </div>
 
           <div class="modal-footer">
