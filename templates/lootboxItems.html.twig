@@ -146,6 +146,9 @@
               var button = $(event.relatedTarget);
               var id = button.attr('data-id');
 
+              $(".additionalFile-existing-row:not(.d-none)").remove();
+              $(".delete-additional-file-id").remove();
+
               if (id === undefined) {
                   // New item
                   editDialog.removeAttr('data-id');
@@ -250,11 +253,11 @@
           $(document).on('click', '.delete-existing-additional-file', function () {
               const row = $(this).closest('.additionalFile-existing-row');
 
-              $("#dialog-edit-form").append('<input type="hidden" name="deleteAdditionalFile[]" value="' + row.data('id') + '">');
+              $("#dialog-edit-form").append('<input type="hidden" name="deleteAdditionalFile[]" class="delete-additional-file-id" value="' + row.data('id') + '">');
               row.remove();
           });
 
-          $("#dialog-edit-form").submit(function (event) {
+          $("#dialog-edit-form").on('submit', function (event) {
               event.preventDefault();
 
               if (currentlySubmitting) {
@@ -404,11 +407,6 @@
           </div>
 
           <div class="modal-body">
-            <div class="alert alert-dismissible alert-danger" style="display: none;">
-              <span id="dialog-edit-error"></span>
-              <button type="button" class="btn-close"></button>
-            </div>
-
             <input type="hidden" id="info-action" name="action">
             <input type="hidden" id="info-id" name="id">
 
@@ -579,6 +577,11 @@
                 </div>
               </div>
             {% endif %}
+
+            <div class="alert alert-dismissible alert-danger" style="display: none;">
+              <span id="dialog-edit-error"></span>
+              <button type="button" class="btn-close"></button>
+            </div>
           </div>
 
           <div class="modal-footer">

@@ -22,6 +22,7 @@ class Permission
         'awards_edit' => 'Edit award information',
         'awards_feedback' => 'View award voting feedback',
         'awards_secret' => 'View secret awards',
+        'bypass_mime_checks' => 'Bypass certain MIME checks when uploading files',
         'edit_config' => 'Edit site config, such as voting times',
         'LEVEL_1' => 'Provides limited access to non-secret data',
         'LEVEL_2' => 'Provides additional read-only access to slightly more information',
@@ -53,7 +54,7 @@ class Permission
         'LEVEL_1' => ['add_video_game', 'awards_feedback', 'nominations_view', 'tasks_view', 'view_unfinished_pages', 'voting_view'],
         'LEVEL_2' => ['LEVEL_1', 'awards_secret', 'items_manage', 'news_view_user', 'profile_view', 'tasks_nominees', 'voting_code'],
         'LEVEL_3' => ['LEVEL_2', 'autocompleter_edit', 'awards_edit', 'nominations_edit', 'profile_edit_notes'],
-        'LEVEL_4' => ['LEVEL_3', 'add_user', 'arg_manage', 'audit_log_view', 'news_manage', 'profile_edit_details', 'referrers_view', 'voting_results', 'adverts_manage', 'items_manage_special'],
+        'LEVEL_4' => ['LEVEL_3', 'add_user', 'arg_manage', 'audit_log_view', 'news_manage', 'profile_edit_details', 'referrers_view', 'voting_results', 'adverts_manage', 'items_manage_special', 'bypass_mime_checks'],
         'LEVEL_5' => ['LEVEL_4', 'awards_delete', 'edit_config', 'template_edit', 'profile_edit_groups']
     ];
 

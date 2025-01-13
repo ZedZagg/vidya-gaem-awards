@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use RandomLib\Factory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class FileService
 {
@@ -21,18 +22,23 @@ class FileService
         'video/webm' => 'webm',
         'application/ogg' => 'ogg',
         'application/x-zip-compressed' => 'zip',
+        'font/ttf' => 'ttf',
+        'font/otf' => 'otf',
+        'application/font-woff' => 'woff',
+        'application/font-woff2' => 'woff2',
+        'font/woff' => 'woff',
+        'font/woff2' => 'woff2',
     ];
 
     /** @var string */
     private string $uploadDirectory;
 
-    /** @var EntityManagerInterface */
-    private EntityManagerInterface $em;
-
-    public function __construct(string $projectDir, EntityManagerInterface $em)
-    {
+    public function __construct(
+        string $projectDir,
+        private EntityManagerInterface $em,
+        private AuthorizationCheckerInterface $authChecker,
+    ) {
         $this->uploadDirectory = $projectDir . '/public/uploads/';
-        $this->em = $em;
     }
 
     public function validateUploadedFile(?UploadedFile $file): void
@@ -41,7 +47,7 @@ class FileService
             throw new Exception('No file was uploaded');
         } elseif (!$file->isValid()) {
             throw new Exception($file->getErrorMessage());
-        } elseif (!in_array($file->getClientMimeType(), array_keys(self::EXTENSION_MAPPING), true)) {
+        } elseif (!in_array($file->getClientMimeType(), array_keys(self::EXTENSION_MAPPING), true) && !$this->authChecker->isGranted('ROLE_BYPASS_MIME_CHECKS')) {
             throw new Exception('Invalid MIME type (' . $file->getClientMimeType() . ')');
         } elseif ($file->getSize() > self::FILESIZE_LIMIT) {
             throw new Exception('Filesize of ' . self::humanFilesize($file->getSize()) . ' exceeds limit of ' . self::humanFilesize(self::FILESIZE_LIMIT));
@@ -69,7 +75,11 @@ class FileService
         $fileEntity = new File();
         $fileEntity->setSubdirectory($directory);
         $fileEntity->setFilename($filename . '-' . time());
-        $fileEntity->setExtension(self::EXTENSION_MAPPING[$file->getClientMimeType()]);
+
+        $extension = self::EXTENSION_MAPPING[$file->getClientMimeType()]
+            ?? $file->getClientOriginalExtension();
+
+        $fileEntity->setExtension($extension);
         $fileEntity->setEntity($entityType);
 
         $this->em->persist($fileEntity);
