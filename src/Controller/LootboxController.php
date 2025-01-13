@@ -197,6 +197,7 @@ class LootboxController extends AbstractController
                         'LootboxItem.additionalFile',
                         'lootboxExtras',
                         null,
+                        true,
                     );
                 } catch (Exception $e) {
                     return $this->json(['error' => $e->getMessage()]);

@@ -41,13 +41,15 @@ class FileService
         $this->uploadDirectory = $projectDir . '/public/uploads/';
     }
 
-    public function validateUploadedFile(?UploadedFile $file): void
+    public function validateUploadedFile(?UploadedFile $file, bool $allowMimeBypass = false): void
     {
+        $checkMime = !$allowMimeBypass || !$this->authChecker->isGranted('ROLE_BYPASS_MIME_CHECKS');
+
         if ($file === null) {
             throw new Exception('No file was uploaded');
         } elseif (!$file->isValid()) {
             throw new Exception($file->getErrorMessage());
-        } elseif (!in_array($file->getClientMimeType(), array_keys(self::EXTENSION_MAPPING), true) && !$this->authChecker->isGranted('ROLE_BYPASS_MIME_CHECKS')) {
+        } elseif ($checkMime && !in_array($file->getClientMimeType(), array_keys(self::EXTENSION_MAPPING), true)) {
             throw new Exception('Invalid MIME type (' . $file->getClientMimeType() . ')');
         } elseif ($file->getSize() > self::FILESIZE_LIMIT) {
             throw new Exception('Filesize of ' . self::humanFilesize($file->getSize()) . ' exceeds limit of ' . self::humanFilesize(self::FILESIZE_LIMIT));
@@ -57,9 +59,9 @@ class FileService
     /**
      * This function does not adhere to security best practices (maybe?)
      */
-    public function handleUploadedFile(?UploadedFile $file, string $entityType, string $directory, ?string $filename): File
+    public function handleUploadedFile(?UploadedFile $file, string $entityType, string $directory, ?string $filename, ?bool $allowMimeBypass = false): File
     {
-        $this->validateUploadedFile($file);
+        $this->validateUploadedFile($file, $allowMimeBypass);
 
         if (!file_exists($this->uploadDirectory . $directory)) {
             mkdir($this->uploadDirectory . $directory, 0777, true);
