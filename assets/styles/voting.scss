@@ -1860,7 +1860,10 @@ a:hover {
   }
 
   .fakeElement {
-    display: none;
+    padding: 0px !important;
+    background-size: cover !important;
+    height: 100%;
+    background-position: center;
   }
   .nominee {
     width: 100%;
@@ -1919,6 +1922,7 @@ a:hover {
     padding: 5px;
     text-align: center;
     width: 25px;
+    bottom: 0px;
   }
 
   .flavorText {
