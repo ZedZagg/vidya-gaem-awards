@@ -62,7 +62,7 @@ function onDumbShit(cb) {
 
 // OwO what's this?
 onDumbShit(function () {
-    var audio = new Audio('/ogg/tf2.ogg');
+    var audio = new Audio('/ogg/box-earned.ogg');
     audio.play();
 
     $('#cheat-code').show();
@@ -454,7 +454,7 @@ jQuery(function () {
     window.cheat = processCheat;
 
     function playCheatMusic(markAsCheater) {
-        var sound = new Audio("/ogg/tf2.ogg");
+        var sound = new Audio("/ogg/box-earned.ogg");
         sound.volume = 0.25;
         sound.play();
 
@@ -522,7 +522,7 @@ jQuery(function () {
         alert('Your drops have been restored.');
     });
 
-    var lootboxSound = new Audio("/ogg/open-box.ogg");
+    var lootboxSound = new Audio("/ogg/box-opened.ogg");
 
     var showNewLoot = function showNewLoot(i) {
         var lootbox = $($('#rewards .lootbox').get(i));
@@ -666,7 +666,7 @@ jQuery(function () {
 
         $('#rewards').modal('show');
 
-        lootboxRevealAudio = new Audio('/ogg/tf2.ogg');
+        lootboxRevealAudio = new Audio('/ogg/box-earned.ogg');
         lootboxRevealAudio.volume = 0.10;
         lootboxRevealAudio.play();
 
