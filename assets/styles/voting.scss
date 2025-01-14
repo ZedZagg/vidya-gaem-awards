@@ -1755,6 +1755,23 @@ a:hover {
 
   img {
     filter: sepia();
+    display: inline-block;
+  }
+
+  .virgin-chad {
+    line-height: 1;
+    div {
+      display: inline-block;
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+    img {
+      display: inline-block;
+      filter: sepia();
+      mix-blend-mode: color-burn;
+      width: 80px; 
+      margin-right: 5px
+    }
   }
 
   .wanted-title {
