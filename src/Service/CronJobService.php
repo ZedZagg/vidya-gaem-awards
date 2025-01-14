@@ -23,7 +23,7 @@ class CronJobService
         $this->crontab = new CrontabRepository(new CrontabAdapter());
 
         $phpVersion = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
-        $this->commandLine = 'php' . $phpVersion . '-sp ' . $projectDir . '/bin/console ' . ResultsCommand::COMMAND_NAME;
+        $this->commandLine = 'php' . $phpVersion . ' ' . $projectDir . '/bin/console ' . ResultsCommand::COMMAND_NAME;
 
         /** @var CrontabJob $job */
         foreach ($this->crontab->getJobs() as $job) {
